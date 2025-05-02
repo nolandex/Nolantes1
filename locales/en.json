@@ -1,0 +1,47 @@
+{
+  "Hero": {
+    "title1": "Start",
+    "title2": "Your Online",
+    "title3": "Business Fast",
+    "description": "NolanDex helps you build a complete online business — website, branding, automation, and content — all done in just a few hours."
+  },
+  "SocialProof": {
+    "maker": "Limited Offer: Get 50% Off If Your Business Doesn't Grow in 30 Days!"
+  },
+  "Showcase": {
+    "title": "Success Stories",
+    "description": "Join 100+ clients who’ve launched their business quickly and easily with NolanDex."
+  },
+  "Feature": {
+    "title": "What You Get"
+  },
+  "Pricing": {
+    "title": "Our Packages",
+    "title2": "Simple pricing. Full service.",
+    "description": "Choose the package that fits your needs. Fast setup, great results, no stress.",
+    "doYouLike": "Love what we offer?",
+    "follow": "Follow us on Instagram nolandexco"
+  },
+  "Testimonials": {
+    "title": "Client Reviews",
+    "description1": "Real feedback from people who’ve built their business with NolanDex.",
+    "description2": "See their stories",
+    "description3": "and results."
+  },
+  "FAQ": {
+    "title": "FAQs",
+    "description": "Find answers to common questions about our service."
+  },
+  "CTA": {
+    "title": "Launch Your Business Today",
+    "description1": "Let us build",
+    "description2": "your business website,",
+    "description3": "boost",
+    "description4": "your brand, and",
+    "description5": "help you sell",
+    "description6": "online fast."
+  },
+  "CTAButton": {
+    "title": "Get Started Now"
+  }
+}

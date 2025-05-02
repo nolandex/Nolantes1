@@ -1,0 +1,47 @@
+{
+  "Hero": {
+    "title1": "Mulai Bisnis",
+    "title2": " Mudah & Cepat",
+    "title3": "",
+    "description": "NolanDex bantu kamu bikin bisnis online sendiri, lengkap dari awal sampai siap jalan. Nggak perlu jago IT!"
+  },
+  "SocialProof": {
+    "maker": "Dibuat oleh NolanDex untuk bantu pemula mulai bisnis"
+  },
+  "Showcase": {
+    "title": "Contoh Hasil",
+    "description": "Sudah lebih dari 1.000 orang terbantu memulai bisnis online dengan NolanDex."
+  },
+  "Feature": {
+    "title": "Apa yang Kamu Dapat?"
+  },
+  "Pricing": {
+    "title": "Harga",
+    "title2": "Akses Bebas",
+    "description": "Layanan NolanDex ini bisa kamu coba tanpa biaya besar. Cocok buat kamu yang baru mulai.",
+    "doYouLike": "Suka dengan konsep ini?",
+    "follow": "Yuk follow IG kami di @nolandexco!"
+  },
+  "Testimonials": {
+    "title": "Cerita Mereka",
+    "description1": "Kalau kamu pernah pakai layanan dari NolanDex dan merasa terbantu,",
+    "description2": "hubungi kami,",
+    "description3": "biar kami tampilkan kisahmu di sini!"
+  },
+  "FAQ": {
+    "title": "Pertanyaan Umum",
+    "description": "Beberapa pertanyaan yang sering ditanyain seputar layanan kami."
+  },
+  "CTA": {
+    "title": "Siap Mulai Bisnis Online?",
+    "description1": "Bangun",
+    "description2": "bisnis kamu sendiri,",
+    "description3": "tampilkan",
+    "description4": "brand-mu ke dunia, dan mulai",
+    "description5": "menghasilkan income ",
+    "description6": "bareng NolanDex!"
+  },
+  "CTAButton": {
+    "title": "Mulai Sekarang"
+  }
+}
