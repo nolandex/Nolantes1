@@ -45,20 +45,44 @@ const PaymentModal = ({
   const [isCopied, setIsCopied] = useState(false);
   const [paymentCode, setPaymentCode] = useState('');
   const [vaNumber, setVaNumber] = useState('');
-  const [qrCodeImage, setQrCodeImage] = useState<string | null>(null);
 
-  // Image paths (now renamed to logo1.png, logo2.png, etc.)
+  /* 
+    Lokasi gambar:
+    Semua gambar payment method disimpan di:
+    /public/images/payments/
+    
+    Struktur file:
+    - qris.png          -> QRIS logo
+    - banks/
+      - bca.png         -> BCA logo
+      - mandiri.png     -> Mandiri logo
+      - bni.png         -> BNI logo
+    - ewallets/
+      - dana.png        -> DANA logo
+      - gopay.png       -> GoPay logo
+      - ovo.png         -> OVO logo
+    - retails/
+      - alfamart.png    -> Alfamart logo
+      - indomaret.png   -> Indomaret logo
+    - qrcode.png        -> QR Code untuk pembayaran
+  */
   const imagePaths = {
-    qris: '/images/logo1.png',        // QRIS logo
-    bca: '/images/logo2.png',         // BCA logo
-    mandiri: '/images/logo3.png',      // Mandiri logo
-    bni: '/images/logo4.png',         // BNI logo
-    dana: '/images/logo5.png',        // DANA logo
-    gopay: '/images/logo6.png',       // GoPay logo
-    ovo: '/images/logo7.png',         // OVO logo
-    alfamart: '/images/logo8.png',    // Alfamart logo
-    indomaret: '/images/logo9.png',   // Indomaret logo
-    qrCode: '/images/logo10.png',     // Default QR code
+    qris: '/images/payments/qris.png',
+    banks: {
+      bca: '/images/payments/banks/bca.png',
+      mandiri: '/images/payments/banks/mandiri.png',
+      bni: '/images/payments/banks/bni.png',
+    },
+    ewallets: {
+      dana: '/images/payments/ewallets/dana.png',
+      gopay: '/images/payments/ewallets/gopay.png',
+      ovo: '/images/payments/ewallets/ovo.png',
+    },
+    retails: {
+      alfamart: '/images/payments/retails/alfamart.png',
+      indomaret: '/images/payments/retails/indomaret.png',
+    },
+    qrCode: '/images/payments/qrcode.png'
   };
 
   useEffect(() => {
@@ -80,20 +104,6 @@ const PaymentModal = ({
     setIsCopied(false);
     setPaymentCode('');
     setVaNumber('');
-    setQrCodeImage(null);
-  };
-
-  const handleQrCodeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setQrCodeImage(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const formatRupiah = (amount: number) => {
@@ -383,29 +393,14 @@ const PaymentModal = ({
                   <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'qris' ? 'max-h-[500px]' : ''}`}>
                     <div className="payment-details-content p-2">
                       <div className="text-center mb-3">
-                        {qrCodeImage ? (
-                          <Image
-                            src={qrCodeImage}
-                            alt="QR Code"
-                            width={200}
-                            height={200}
-                            className="mx-auto w-48 h-48 rounded-lg mb-2"
-                          />
-                        ) : (
-                          <div className="mx-auto w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg mb-2 flex items-center justify-center">
-                            <p className="text-gray-500 text-sm">Upload QR Code</p>
-                          </div>
-                        )}
-                        <label className="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded text-xs cursor-pointer hover:bg-blue-100">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleQrCodeUpload}
-                            className="hidden"
-                          />
-                          {qrCodeImage ? 'Ganti QR Code' : 'Upload QR Code'}
-                        </label>
-                        <p className="text-xs text-gray-500 mt-2">Scan QR code menggunakan aplikasi mobile banking atau e-wallet</p>
+                        <Image
+                          src={imagePaths.qrCode}
+                          alt="QR Code"
+                          width={200}
+                          height={200}
+                          className="mx-auto w-48 h-48 rounded-lg mb-2"
+                        />
+                        <p className="text-xs text-gray-500">Scan QR code menggunakan aplikasi mobile banking atau e-wallet</p>
                       </div>
 
                       <div className="bg-blue-50 p-2 rounded-lg text-xs text-blue-800 mb-3">
@@ -449,9 +444,9 @@ const PaymentModal = ({
                       <h4 className="font-medium mb-2 text-center text-sm">Pilih Bank</h4>
                       <div className="grid grid-cols-3 gap-2 mb-3">
                         {[
-                          { name: 'BCA', logo: imagePaths.bca },
-                          { name: 'Mandiri', logo: imagePaths.mandiri },
-                          { name: 'BNI', logo: imagePaths.bni },
+                          { name: 'BCA', logo: imagePaths.banks.bca },
+                          { name: 'Mandiri', logo: imagePaths.banks.mandiri },
+                          { name: 'BNI', logo: imagePaths.banks.bni },
                         ].map((bank) => (
                           <button
                             key={bank.name}
@@ -537,9 +532,9 @@ const PaymentModal = ({
                       <h4 className="font-medium mb-2 text-center text-sm">Pilih E-Wallet</h4>
                       <div className="grid grid-cols-3 gap-2 mb-3">
                         {[
-                          { name: 'DANA', logo: imagePaths.dana },
-                          { name: 'GoPay', logo: imagePaths.gopay },
-                          { name: 'OVO', logo: imagePaths.ovo },
+                          { name: 'DANA', logo: imagePaths.ewallets.dana },
+                          { name: 'GoPay', logo: imagePaths.ewallets.gopay },
+                          { name: 'OVO', logo: imagePaths.ewallets.ovo },
                         ].map((wallet) => (
                           <button
                             key={wallet.name}
@@ -625,8 +620,8 @@ const PaymentModal = ({
                       <h4 className="font-medium mb-2 text-center text-sm">Pilih Retail</h4>
                       <div className="grid grid-cols-2 gap-2 mb-3">
                         {[
-                          { name: 'Alfamart', logo: imagePaths.alfamart },
-                          { name: 'Indomaret', logo: imagePaths.indomaret },
+                          { name: 'Alfamart', logo: imagePaths.retails.alfamart },
+                          { name: 'Indomaret', logo: imagePaths.retails.indomaret },
                         ].map((retail) => (
                           <button
                             key={retail.name}
