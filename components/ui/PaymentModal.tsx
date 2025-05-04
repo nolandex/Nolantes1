@@ -15,6 +15,7 @@ import {
   faCreditCard,
   faLock,
   faArrowRight,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Plan {
@@ -38,6 +39,8 @@ const PaymentModal = ({
   const [selectedRetail, setSelectedRetail] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isFailed, setIsFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [paymentCode, setPaymentCode] = useState('');
@@ -56,6 +59,8 @@ const PaymentModal = ({
     setSelectedRetail(null);
     setIsProcessing(false);
     setIsSuccess(false);
+    setIsFailed(false);
+    setErrorMessage('');
     setInvoiceNumber('');
     setIsCopied(false);
     setPaymentCode('');
@@ -72,7 +77,7 @@ const PaymentModal = ({
 
   const generatePaymentCode = (method: string) => {
     if (method === 'va' && selectedBank) {
-      const prefix = selectedBank === 'BCA' ? '390' : selectedBank === 'Mandi ri' ? '700' : '800';
+      const prefix = selectedBank === 'BCA' ? '390' : selectedBank === 'Mandiri' ? '700' : '800';
       const code = `${prefix}${Math.floor(100000000 + Math.random() * 900000000)}`;
       setVaNumber(code);
       return code;
@@ -89,18 +94,47 @@ const PaymentModal = ({
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+    navigator.clipboard.writeText(text).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }).catch((err) => {
+      console.error('Gagal menyalin:', err);
+    });
   };
 
-  const processPayment = () => {
+  // Simulasi panggilan API dengan respons JSON
+  const simulatePaymentApi = async () => {
+    // Ganti dengan panggilan API nyata, misalnya: await fetch('/api/payment', { method: 'POST', body: JSON.stringify({ method: activeMethod, amount: plan.amount }) })
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Simulasi respons JSON (50% sukses, 50% gagal)
+        if (Math.random() > 0.5) {
+          resolve({ status: 'success', invoice: `INV-${Date.now().toString().slice(-8)}` });
+        } else {
+          resolve({ status: 'error', message: 'Pembayaran gagal: Saldo tidak cukup atau server bermasalah.' });
+        }
+      }, 1000);
+    });
+  };
+
+  const processPayment = async () => {
     setIsProcessing(true);
-    setTimeout(() => {
+    try {
+      const response: any = await simulatePaymentApi(); // Ganti dengan panggilan API nyata
       setIsProcessing(false);
-      setIsSuccess(true);
-      setInvoiceNumber(`INV-${Date.now().toString().slice(-8)}`);
-    }, 1500);
+
+      if (response.status === 'success') {
+        setIsSuccess(true);
+        setInvoiceNumber(response.invoice);
+      } else {
+        setIsFailed(true);
+        setError  setErrorMessage(response.message || 'Terjadi kesalahan saat memproses pembayaran.');
+      }
+    } catch (error) {
+      setIsProcessing(false);
+      setIsFailed(true);
+      setErrorMessage('Gagal menghubungi server. Silakan coba lagi nanti.');
+    }
   };
 
   const getMethodName = (method: string | null) => {
@@ -169,6 +203,25 @@ const PaymentModal = ({
         </div>
       )}
 
+      {/* Failure Modal */}
+      {isFailed && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+            <div className="text-red-500 mb-4">
+              <FontAwesomeIcon icon={faExclamationTriangle} className="text-5xl" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Pembayaran Gagal!</h2>
+            <p className="text-gray-600 mb-4">{errorMessage}</p>
+            <button
+              onClick={() => setIsFailed(false)}
+              className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Main Payment Modal */}
       <div className="w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-xl max-h-[90vh]">
         <div className="bg-blue-600 p-6 text-white rounded-t-xl">
@@ -225,7 +278,7 @@ const PaymentModal = ({
               </button>
 
               {activeMethod === 'qris' && (
-                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'qris' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
                     <div className="text-center mb-4">
                       <div className="qr-code mx-auto w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg mb-3"></div>
@@ -268,7 +321,7 @@ const PaymentModal = ({
               </button>
 
               {activeMethod === 'va' && (
-                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'va' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
                     <h4 className="font-medium mb-3 text-center">Pilih Bank</h4>
                     <div className="grid grid-cols-3 gap-2 mb-4">
@@ -355,7 +408,7 @@ const PaymentModal = ({
               </button>
 
               {activeMethod === 'ewallet' && (
-                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'ewallet' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
                     <h4 className="font-medium mb-3 text-center">Pilih E-Wallet</h4>
                     <div className="grid grid-cols-3 gap-2 mb-4">
@@ -442,7 +495,7 @@ const PaymentModal = ({
               </button>
 
               {activeMethod === 'retail' && (
-                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'retail' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
                     <h4 className="font-medium mb-3 text-center">Pilih Retail</h4>
                     <div className="grid grid-cols-2 gap-2 mb-4">
@@ -528,7 +581,7 @@ const PaymentModal = ({
               </button>
 
               {activeMethod === 'cc' && (
-                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'cc' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
                     <div className="mb-4">
                       <label className="block text-gray-700 mb-2">Informasi Kartu</label>
