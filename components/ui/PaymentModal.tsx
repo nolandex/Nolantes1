@@ -34,7 +34,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="light fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-blue-600 p-4 rounded-t-lg">
@@ -131,7 +131,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                         height={40} 
                         className="mb-1"
                       />
-                      <span className="text-xs">{bank}</span>
+                      <span className="text-xs text-gray-800">{bank}</span>
                     </button>
                   ))}
                 </div>
@@ -195,7 +195,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                         height={40} 
                         className="mb-1"
                       />
-                      <span className="text-xs">{wallet}</span>
+                      <span className="text-xs text-gray-800">{wallet}</span>
                     </button>
                   ))}
                 </div>
@@ -259,7 +259,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                         height={40} 
                         className="mb-1"
                       />
-                      <span className="text-xs">{retail}</span>
+                      <span className="text-xs text-gray-800">{retail}</span>
                     </button>
                   ))}
                 </div>
@@ -358,7 +358,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
 
       {/* Processing Modal */}
       {isProcessing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="light fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="mb-4">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -373,7 +373,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
 
       {/* Success Modal */}
       {isSuccess && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="light fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="text-green-500 mb-4 text-5xl">
               ✓
