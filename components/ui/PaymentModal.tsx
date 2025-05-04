@@ -104,10 +104,8 @@ const PaymentModal = ({
 
   // Simulasi panggilan API dengan respons JSON
   const simulatePaymentApi = async () => {
-    // Ganti dengan panggilan API nyata, misalnya: await fetch('/api/payment', { method: 'POST', body: JSON.stringify({ method: activeMethod, amount: plan.amount }) })
     return new Promise((resolve) => {
       setTimeout(() => {
-        // Simulasi respons JSON (50% sukses, 50% gagal)
         if (Math.random() > 0.5) {
           resolve({ status: 'success', invoice: `INV-${Date.now().toString().slice(-8)}` });
         } else {
@@ -120,7 +118,7 @@ const PaymentModal = ({
   const processPayment = async () => {
     setIsProcessing(true);
     try {
-      const response: any = await simulatePaymentApi(); // Ganti dengan panggilan API nyata
+      const response: any = await simulatePaymentApi();
       setIsProcessing(false);
 
       if (response.status === 'success') {
@@ -155,7 +153,7 @@ const PaymentModal = ({
       {/* Processing Modal */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+          <div className="payment-modal bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="mb-4">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
@@ -164,7 +162,7 @@ const PaymentModal = ({
                 ></div>
               </div>
             </div>
-            <h3 className="text-lg font-bold mb-2">Memproses Pembayaran</h3>
+            <h3 className="text-lg font-bold text-gray-800 mb-2">Memproses Pembayaran</h3>
             <p className="text-gray-600">Harap tunggu sebentar...</p>
           </div>
         </div>
@@ -173,20 +171,20 @@ const PaymentModal = ({
       {/* Success Modal */}
       {isSuccess && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+          <div className="payment-modal bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="text-green-500 mb-4">
               <FontAwesomeIcon icon={faCheckCircle} className="text-5xl" />
             </div>
-            <h2 className="text-2xl font-bold mb-2">Pembayaran Berhasil!</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Pembayaran Berhasil!</h2>
             <p className="text-gray-600 mb-4">Terima kasih telah melakukan pembayaran.</p>
             <div className="bg-gray-50 p-4 rounded-lg mb-4 text-left">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-500">Invoice</span>
-                <span className="font-mono">{invoiceNumber}</span>
+                <span className="font-mono text-gray-800">{invoiceNumber}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span className="text-gray-500">Metode</span>
-                <span className="font-medium">{getMethodName(activeMethod)}</span>
+                <span className="font-medium text-gray-800">{getMethodName(activeMethod)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Total</span>
@@ -206,11 +204,11 @@ const PaymentModal = ({
       {/* Failure Modal */}
       {isFailed && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+          <div className="payment-modal bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="text-red-500 mb-4">
               <FontAwesomeIcon icon={faExclamationTriangle} className="text-5xl" />
             </div>
-            <h2 className="text-2xl font-bold mb-2">Pembayaran Gagal!</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Pembayaran Gagal!</h2>
             <p className="text-gray-600 mb-4">{errorMessage}</p>
             <button
               onClick={() => setIsFailed(false)}
@@ -223,11 +221,11 @@ const PaymentModal = ({
       )}
 
       {/* Main Payment Modal */}
-      <div className="w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-xl max-h-[90vh]">
+      <div className="payment-modal w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-xl max-h-[90vh]">
         <div className="bg-blue-600 p-6 text-white rounded-t-xl">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-xl font-bold">{plan.name}</h2>
+              <h2 className="text-xl font-bold"> {plan.name}</h2>
               <p className="text-blue-100 text-sm mt-1">{plan.product}</p>
             </div>
             <button onClick={onClose} className="text-white hover:text-blue-200">
@@ -240,7 +238,7 @@ const PaymentModal = ({
           {/* Order Summary */}
           <div className="flex justify-between items-center mb-6 p-4 bg-gray-50 rounded-lg">
             <div>
-              <h3 className="font-medium">Total Pembayaran</h3>
+              <h3 className="font-medium text-gray-800">Total Pembayaran</h3>
               <p className="text-gray-500 text-sm">Termasuk PPN 11%</p>
             </div>
             <div className="text-right">
@@ -250,7 +248,7 @@ const PaymentModal = ({
           </div>
 
           {/* Payment Methods */}
-          <h3 className="text-lg font-bold mb-4">Metode Pembayaran</h3>
+          <h3 className="text-lg font-bold text-gray-800 mb-4">Metode Pembayaran</h3>
 
           <div className="space-y-3 mb-6">
             {/* QRIS */}
@@ -269,7 +267,7 @@ const PaymentModal = ({
                   />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="font-medium text-sm">QRIS</h3>
+                  <h3 className="font-medium text-sm text-gray-800">QRIS</h3>
                 </div>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
@@ -312,7 +310,7 @@ const PaymentModal = ({
                   <FontAwesomeIcon icon={faUniversity} className="text-blue-600" />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="font-medium text-sm">Virtual Account</h3>
+                  <h3 className="font-medium text-sm text-gray-800">Virtual Account</h3>
                 </div>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
@@ -323,7 +321,7 @@ const PaymentModal = ({
               {activeMethod === 'va' && (
                 <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'va' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
-                    <h4 className="font-medium mb-3 text-center">Pilih Bank</h4>
+                    <h4 className="font-medium text-gray-800 mb-3 text-center">Pilih Bank</h4>
                     <div className="grid grid-cols-3 gap-2 mb-4">
                       {[
                         { name: 'BCA', logo: '/images/bca-logo.png' },
@@ -355,7 +353,7 @@ const PaymentModal = ({
                           <div className="mb-3">
                             <label className="block text-gray-500 text-sm mb-1">Nomor Virtual Account</label>
                             <div className="flex items-center">
-                              <span className="font-mono va-number bg-gray-100 p-2 rounded flex-1">{vaNumber}</span>
+                              <span className="font-mono va-number bg-gray-100 p-2 rounded flex-1 text-gray-800">{vaNumber}</span>
                               <button
                                 onClick={() => copyToClipboard(vaNumber)}
                                 className="text-blue-600 hover:text-blue-800 ml-2"
@@ -399,7 +397,7 @@ const PaymentModal = ({
                   <FontAwesomeIcon icon={faWallet} className="text-green-600" />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="font-medium text-sm">E-Wallet</h3>
+                  <h3 className="font-medium text-sm text-gray-800">E-Wallet</h3>
                 </div>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
@@ -410,7 +408,7 @@ const PaymentModal = ({
               {activeMethod === 'ewallet' && (
                 <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'ewallet' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
-                    <h4 className="font-medium mb-3 text-center">Pilih E-Wallet</h4>
+                    <h4 className="font-medium text-gray-800 mb-3 text-center">Pilih E-Wallet</h4>
                     <div className="grid grid-cols-3 gap-2 mb-4">
                       {[
                         { name: 'DANA', logo: '/images/dana-logo.png' },
@@ -442,7 +440,7 @@ const PaymentModal = ({
                           <div className="mb-3">
                             <label className="block text-gray-500 text-sm mb-1">Nomor E-Wallet</label>
                             <div className="flex items-center">
-                              <span className="font-mono ewallet-number bg-gray-100 p-2 rounded flex-1">{paymentCode}</span>
+                              <span className="font-mono ewallet-number bg-gray-100 p-2 rounded flex-1 text-gray-800">{paymentCode}</span>
                               <button
                                 onClick={() => copyToClipboard(paymentCode)}
                                 className="text-blue-600 hover:text-blue-800 ml-2"
@@ -486,7 +484,7 @@ const PaymentModal = ({
                   <FontAwesomeIcon icon={faStore} className="text-orange-600" />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="font-medium text-sm">Retail</h3>
+                  <h3 className="font-medium text-sm text-gray-800">Retail</h3>
                 </div>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
@@ -497,7 +495,7 @@ const PaymentModal = ({
               {activeMethod === 'retail' && (
                 <div className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${activeMethod === 'retail' ? 'max-h-[500px]' : ''}`}>
                   <div className="payment-details-content p-3">
-                    <h4 className="font-medium mb-3 text-center">Pilih Retail</h4>
+                    <h4 className="font-medium text-gray-800 mb-3 text-center">Pilih Retail</h4>
                     <div className="grid grid-cols-2 gap-2 mb-4">
                       {[
                         { name: 'Alfamart', logo: '/images/alfamart-logo.png' },
@@ -528,7 +526,7 @@ const PaymentModal = ({
                           <div className="mb-3">
                             <label className="block text-gray-500 text-sm mb-1">Kode Pembayaran</label>
                             <div className="flex items-center">
-                              <span className="font-mono retail-code bg-gray-100 p-2 rounded flex-1">{paymentCode}</span>
+                              <span className="font-mono retail-code bg-gray-100 p-2 rounded flex-1 text-gray-800">{paymentCode}</span>
                               <button
                                 onClick={() => copyToClipboard(paymentCode)}
                                 className="text-blue-600 hover:text-blue-800 ml-2"
@@ -572,7 +570,7 @@ const PaymentModal = ({
                   <FontAwesomeIcon icon={faCreditCard} className="text-purple-600" />
                 </div>
                 <div className="flex-grow">
-                  <h3 className="font-medium text-sm">Kartu Kredit</h3>
+                  <h3 className="font-medium text-sm text-gray-800">Kartu Kredit</h3>
                 </div>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
@@ -589,27 +587,27 @@ const PaymentModal = ({
                         <input
                           type="text"
                           placeholder="Nomor Kartu"
-                          className="w-full px-4 py-2 border rounded-lg"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 bg-white"
                           maxLength={19}
                         />
                         <div className="grid grid-cols-2 gap-3">
                           <input
                             type="text"
                             placeholder="MM/YY"
-                            className="w-full px-4 py-2 border rounded-lg"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 bg-white"
                             maxLength={5}
                           />
                           <input
                             type="text"
                             placeholder="CVV"
-                            className="w-full px-4 py-2 border rounded-lg"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 bg-white"
                             maxLength={3}
                           />
                         </div>
                         <input
                           type="text"
                           placeholder="Nama di Kartu"
-                          className="w-full px-4 py-2 border rounded-lg"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 bg-white"
                         />
                       </div>
                     </div>
