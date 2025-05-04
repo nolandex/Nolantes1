@@ -8,22 +8,16 @@ import {
   CardFooter,
   CardHeader,
   Divider,
-  Link,
   Spacer,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Image
+  Link,
 } from "@nextui-org/react";
 import { siteConfig } from "@/config/site";
 import { ALL_TIERS } from "@/config/tiers";
-import { FaCheck, FaChevronDown, FaCopy, FaTimes, FaLock, FaArrowRight, FaCheckCircle, FaInfoCircle, FaExclamationCircle, FaArrowLeft } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import { RoughNotation } from "react-rough-notation";
 import { TiersEnum } from "@/types/pricing";
 
+// Define TypeScript interface for props
 interface PricingProps {
   id: string;
   locale: {
@@ -38,94 +32,101 @@ interface PricingProps {
 
 const Pricing = ({ id, locale, langName }: PricingProps) => {
   const [activeTab, setActiveTab] = useState<"setup" | "website">("setup");
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [activeDetails, setActiveDetails] = useState("");
-  const [selectedBank, setSelectedBank] = useState("");
-  const [selectedWallet, setSelectedWallet] = useState("");
-  const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [paymentStep, setPaymentStep] = useState<"selectMethod" | "details" | "confirm">("selectMethod");
-
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showProcessingModal, setShowProcessingModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const TIERS = ALL_TIERS[`TIERS_${langName.toUpperCase()}`];
-  const selectedTier = TIERS?.find(
-    (tier: any) => tier.key === (activeTab === "setup" ? TiersEnum.Free : TiersEnum.Customize)
-  );
 
-  const handleMethodClick = (method: string) => {
-    setActiveDetails(method);
-    setPaymentStep("details");
+  // Mapping link berdasarkan bahasa
+  const linkByLanguage: { [key: string]: string } = {
+    en: "https://wa.me/6285156779923?text=Hi%2C%20I'm%20interested%20in%20your%20business%20setup%20services",
+    zh: "https://wa.me/6285156779923?text=Hi%2C%20saya%20tertarik%20dengan%20layanan%20setup%20bisnis%20Anda",
+    ja: "https://wa.me/6281234567891?text=こんにちは、ビジネス設定サービスに興味があります",
+    ar: "https://wa.me/6281234567892?text=مرحبا، أنا مهتم بخدمات إعداد الأعمال",
+    es: "https://wa.me/6281234567893?text=Hola, estoy interesado en tus servicios de configuración de negocios",
+    ru: "https://wa.me/6281234567894?text=Здравствуйте, я заинтересован в ваших услугах по настройке бизнеса",
   };
 
-  const processPayment = () => {
-    setIsPaymentModalOpen(false);
-    setIsProcessingModalOpen(true);
-    setInvoiceNumber(`INV-${Math.floor(1000 + Math.random() * 9000)}`);
+  // Pilih link berdasarkan langName, fallback ke 'en' jika tidak ditemukan
+  const whatsappLink = linkByLanguage[langName] || linkByLanguage.en;
+
+  // Filter tier berdasarkan activeTab
+  const selectedTier = TIERS?.find(
+    (tier: any) =>
+      tier.key === (activeTab === "setup" ? TiersEnum.Free : TiersEnum.Customize)
+  );
+
+  const handlePaymentClick = () => {
+    setShowPaymentModal(true);
+  };
+
+  const handleClosePaymentModal = () => {
+    setShowPaymentModal(false);
+  };
+
+  const handleConfirmPayment = () => {
+    setShowPaymentModal(false);
+    setShowProcessingModal(true);
     
     setTimeout(() => {
-      setIsProcessingModalOpen(false);
-      setIsSuccessModalOpen(true);
+      setShowProcessingModal(false);
+      setShowSuccessModal(true);
     }, 1500);
   };
 
-  const handleNextStep = () => {
-    if (paymentStep === "selectMethod") {
-      if (activeDetails) setPaymentStep("details");
-    } else if (paymentStep === "details") {
-      setPaymentStep("confirm");
-    } else if (paymentStep === "confirm") {
-      processPayment();
-    }
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
   };
 
-  const handleBackStep = () => {
-    if (paymentStep === "details") {
-      setPaymentStep("selectMethod");
-      setActiveDetails("");
-    } else if (paymentStep === "confirm") {
-      setPaymentStep("details");
-    }
+  const handleMethodSelect = (method: string) => {
+    setSelectedMethod(method);
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+  const getMethodName = (method: string | null) => {
+    const methods: Record<string, string> = {
+      'qris': 'QRIS',
+      'virtual_account': 'Virtual Account',
+      'bank_transfer': 'Transfer Bank',
+      'ewallet': 'E-Wallet',
+      'retail': 'Retail',
+      'credit_card': 'Kartu Kredit'
+    };
+    return method ? methods[method] || 'Pembayaran' : '';
   };
 
-  // Warna tetap (tidak terpengaruh dark mode)
-  const customStyles = {
-    card: "bg-gradient-to-br from-gray-900 to-gray-800 rounded-[8px]",
-    modal: "bg-white text-gray-800",
-    modalHeader: "bg-blue-600 text-white",
-    button: "bg-blue-600 hover:bg-blue-700 text-white",
-    secondaryButton: "bg-gray-200 hover:bg-gray-300 text-gray-800",
-    input: "bg-white border-gray-300",
-    infoBox: "bg-blue-50 text-blue-800",
-    warningBox: "bg-yellow-50 text-yellow-800",
-    successBox: "bg-green-50 text-green-800",
-    paymentMethod: "bg-white border-gray-200",
-    paymentDetails: "bg-gray-50",
-    disabledButton: "bg-gray-400 text-gray-100"
+  const formatRupiah = (amount: string) => {
+    return 'Rp' + parseInt(amount).toLocaleString('id-ID');
   };
 
   return (
-    <section id={id} className="flex flex-col justify-center max-w-3xl items-center pt-12">
+    <section
+      id={id}
+      className="flex flex-col justify-center max-w-3xl items-center pt-12"
+    >
       <div className="flex flex-col text-center max-w-lg">
         <h2 className="text-center text-white">
           <RoughNotation type="highlight" show={true} color="#2563EB">
             {locale.title}
           </RoughNotation>
         </h2>
-        <h3 className="text-3xl font-medium tracking-tight mt-2 text-white">
+        <h3 className="text-3xl font-medium tracking-tight mt-2">
           {locale.title2}
         </h3>
         <Spacer y={3} />
-        <p className="text-medium text-gray-400">{locale.description}</p>
+        <p className="text-medium text-default-500">{locale.description}</p>
       </div>
       <Spacer y={6} />
       <div className="w-[85%] max-w-lg">
         {selectedTier ? (
-          <Card className={`p-2 ${customStyles.card}`} shadow="md" radius="md">
+          <Card
+            key={selectedTier.key}
+            className="p-2 bg-gradient-to-br from-gray-900 to-gray-800 rounded-[8px]"
+            shadow="md"
+            radius="md"
+          >
             <CardHeader className="flex flex-col items-start gap-1 pb-0">
+              {/* Tab Navigation */}
               <div className="flex w-full border-b border-gray-700">
                 <button
                   onClick={() => setActiveTab("setup")}
@@ -135,7 +136,7 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
                       : "text-gray-400 hover:text-gray-200"
                   }`}
                 >
-                  {langName === "en" ? "Setup" : "Free"}
+                  Setup
                 </button>
                 <button
                   onClick={() => setActiveTab("website")}
@@ -145,9 +146,10 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
                       : "text-gray-400 hover:text-gray-200"
                   }`}
                 >
-                  {langName === "en" ? "Website" : "Custom"}
+                  Website
                 </button>
               </div>
+              {/* Tier Title and Description */}
               <div className="pt-4">
                 <h2 className="text-medium font-medium text-white">
                   {selectedTier.title || "Untitled"}
@@ -158,29 +160,35 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
               </div>
             </CardHeader>
             <Divider className="bg-gray-700" />
-            <CardBody className="gap-6">
-              <p className="flex items-baseline gap-1 pt-2">
-                <span className="inline bg-gradient-to-br from-white to-gray-400 bg-clip-text text-xl font-semibold leading-7 tracking-tight text-transparent">
+            <CardBody className="gap-8">
+              <p className="flex items-baseline gap-1 pt-2 pb-4">
+                <span className="inline bg-gradient-to-br from-white to-gray-400 bg-clip-text text-4xl font-bold leading-7 tracking-tight text-transparent">
                   {selectedTier.price || "N/A"}
                 </span>
               </p>
               <ul className="flex flex-col gap-1">
-                {selectedTier.features?.map((feature: string) => (
-                  <li key={feature} className="flex items-center gap-2">
-                    <FaCheck className="text-blue-500" />
-                    <p className="text-sm text-gray-400">{feature}</p>
+                {selectedTier.features && selectedTier.features.length > 0 ? (
+                  selectedTier.features.map((feature: string) => (
+                    <li key={feature} className="flex items-center gap-2">
+                      <FaCheck className="text-blue-500" />
+                      <p className="text-sm text-gray-400">{feature}</p>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-sm text-gray-400">
+                    No features available
                   </li>
-                ))}
+                )}
               </ul>
             </CardBody>
             <CardFooter>
               <Button
                 fullWidth
-                className={`${customStyles.button} py-3 rounded-lg font-bold`}
-                onPress={() => {
-                  setIsPaymentModalOpen(true);
-                  setPaymentStep("selectMethod");
-                }}
+                onClick={handlePaymentClick}
+                color={selectedTier.buttonColor || "primary"}
+                variant={selectedTier.buttonVariant || "solid"}
+                radius="md"
+                className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-[8px] hover:from-blue-700 hover:to-blue-600 transition-all duration-200"
               >
                 {selectedTier.buttonText || "Buy"}
               </Button>
@@ -192,359 +200,155 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
           </p>
         )}
       </div>
+      <Spacer y={10} />
 
       {/* Payment Modal */}
-      <Modal 
-        isOpen={isPaymentModalOpen} 
-        onOpenChange={setIsPaymentModalOpen}
-        placement="center"
-        backdrop="blur"
-        size="md"
-        className="max-w-md"
-      >
-        <ModalContent className={`${customStyles.modal} rounded-t-lg`}>
-          {(onClose) => (
-            <>
-              <ModalHeader className={`${customStyles.modalHeader} p-6 rounded-t-lg`}>
-                <div className="flex justify-between items-center w-full">
-                  <div>
-                    <h2 className="text-xl font-bold">Pembayaran</h2>
-                    <p className="text-blue-100 text-sm mt-1">{selectedTier?.title}</p>
-                  </div>
-                  <Button isIconOnly variant="light" onPress={onClose} className="text-white">
-                    <FaTimes />
-                  </Button>
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="bg-blue-600 p-6 text-white">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-xl font-bold">Pembayaran</h2>
+                  <p className="text-blue-100 text-sm mt-1">Layanan Premium</p>
                 </div>
-              </ModalHeader>
-              
-              <ModalBody className="p-6">
-                <div className="flex justify-between items-center mb-6 p-4 bg-gray-100 rounded-lg">
-                  <div>
-                    <h3 className="font-medium">Total Pembayaran</h3>
-                    <p className="text-gray-500 text-sm">Termasuk PPN 11%</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-gray-500 line-through text-sm">Rp 500.000</p>
-                    <p className="text-blue-600 font-bold text-xl">{selectedTier?.price}</p>
-                  </div>
-                </div>
-
-                {paymentStep === "selectMethod" && (
-                  <>
-                    <h3 className="text-lg font-bold mb-4">Pilih Metode Pembayaran</h3>
-                    <div className="space-y-3 mb-6">
-                      {/* QRIS */}
-                      <div
-                        className={`${customStyles.paymentMethod} rounded-lg p-3 flex items-center cursor-pointer shadow-sm border ${
-                          activeDetails === "qris" ? "border-blue-400" : ""
-                        }`}
-                        onClick={() => handleMethodClick("qris")}
-                      >
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
-                          <Image
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QRIS_logo.svg/1200px-QRIS_logo.svg.png"
-                            alt="QRIS"
-                            className="h-5"
-                          />
-                        </div>
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-sm">QRIS</h3>
-                        </div>
-                        <FaArrowRight className="text-gray-400" />
-                      </div>
-                      {/* Virtual Account */}
-                      <div
-                        className={`${customStyles.paymentMethod} rounded-lg p-3 flex items-center cursor-pointer shadow-sm border ${
-                          activeDetails === "virtual_account" ? "border-blue-400" : ""
-                        }`}
-                        onClick={() => handleMethodClick("virtual_account")}
-                      >
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
-                          <FaCheck className="text-blue-600" />
-                        </div>
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-sm">Virtual Account</h3>
-                        </div>
-                        <FaArrowRight className="text-gray-400" />
-                      </div>
-                      {/* Credit Card */}
-                      <div
-                        className={`${customStyles.paymentMethod} rounded-lg p-3 flex items-center cursor-pointer shadow-sm border ${
-                          activeDetails === "credit_card" ? "border-blue-400" : ""
-                        }`}
-                        onClick={() => handleMethodClick("credit_card")}
-                      >
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
-                          <FaCheck className="text-purple-600" />
-                        </div>
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-sm">Kartu Kredit</h3>
-                        </div>
-                        <FaArrowRight className="text-gray-400" />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {paymentStep === "details" && (
-                  <>
-                    <h3 className="text-lg font-bold mb-4">Detail Pembayaran</h3>
-                    {activeDetails === "qris" && (
-                      <div className={`${customStyles.paymentDetails} p-4 rounded-lg`}>
-                        <div className="text-center mb-4">
-                          <div className="qr-code mx-auto w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg mb-3 flex items-center justify-center">
-                            <p className="text-gray-400">QR Code Preview</p>
-                          </div>
-                          <p className="text-sm text-gray-500">Scan QR code menggunakan aplikasi mobile banking atau e-wallet</p>
-                        </div>
-                        <div className={`${customStyles.infoBox} p-3 rounded-lg text-sm mb-4 flex items-center`}>
-                          <FaInfoCircle className="mr-2" /> QR code akan kadaluarsa dalam 24 jam
-                        </div>
-                      </div>
-                    )}
-                    {activeDetails === "virtual_account" && (
-                      <div className={`${customStyles.paymentDetails} p-4 rounded-lg`}>
-                        <h4 className="font-medium mb-3 text-center">Pilih Bank</h4>
-                        <div className="grid grid-cols-3 gap-2 mb-4">
-                          {["bca", "mandiri", "bni"].map((bank) => (
-                            <div
-                              key={bank}
-                              className={`p-2 rounded-lg cursor-pointer text-center ${
-                                selectedBank === bank ? "bg-blue-100" : "bg-white"
-                              }`}
-                              onClick={() => setSelectedBank(bank)}
-                            >
-                              <Image
-                                src={`https://logo.clearbit.com/${bank}.co.id`}
-                                alt={bank.toUpperCase()}
-                                className="h-8 mx-auto"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        <div className="bg-gray-100 p-4 rounded-lg mb-4">
-                          <div className="mb-3">
-                            <label className="block text-gray-500 text-sm mb-1">Nomor Virtual Account</label>
-                            <div className="flex items-center">
-                              <span className="font-mono bg-gray-200 p-2 rounded flex-1">
-                                {selectedBank ? `88888${selectedBank === "bca" ? "01234567890" : selectedBank === "mandiri" ? "12345678901" : "23456789012"}` : "Pilih bank terlebih dahulu"}
-                              </span>
-                              <Button
-                                isIconOnly
-                                variant="light"
-                                className="text-blue-600 hover:text-blue-800 ml-2"
-                                onPress={() => copyToClipboard(`88888${selectedBank === "bca" ? "01234567890" : selectedBank === "mandiri" ? "12345678901" : "23456789012"}`)}
-                              >
-                                <FaCopy />
-                              </Button>
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-gray-500 text-sm mb-1">Jumlah Transfer</label>
-                            <span className="font-bold text-blue-600">{selectedTier?.price}</span>
-                          </div>
-                        </div>
-                        <div className={`${customStyles.warningBox} p-3 rounded-lg text-sm mb-4 flex items-center`}>
-                          <FaExclamationCircle className="mr-2" /> Transfer tepat sesuai nominal untuk proses otomatis
-                        </div>
-                      </div>
-                    )}
-                    {activeDetails === "credit_card" && (
-                      <div className={`${customStyles.paymentDetails} p-4 rounded-lg`}>
-                        <div className="mb-4">
-                          <label className="block text-gray-700 mb-2">Informasi Kartu</label>
-                          <div className="space-y-3">
-                            <Input
-                              type="text"
-                              placeholder="Nomor Kartu"
-                              maxLength={19}
-                              className={customStyles.input}
-                            />
-                            <div className="grid grid-cols-2 gap-3">
-                              <Input
-                                type="text"
-                                placeholder="MM/YY"
-                                maxLength={5}
-                                className={customStyles.input}
-                              />
-                              <Input
-                                type="text"
-                                placeholder="CVV"
-                                maxLength={3}
-                                className={customStyles.input}
-                              />
-                            </div>
-                            <Input
-                              type="text"
-                              placeholder="Nama di Kartu"
-                              className={customStyles.input}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex items-center mb-4">
-                          <Input type="checkbox" id="saveCard" className="mr-2" />
-                          <label htmlFor="saveCard" className="text-sm text-gray-600">Simpan kartu untuk pembayaran berikutnya</label>
-                        </div>
-                        <div className="bg-gray-100 p-4 rounded-lg mb-4">
-                          <div className="flex justify-between">
-                            <span className="text-gray-500">Jumlah Pembayaran</span>
-                            <span className="font-bold text-blue-600">{selectedTier?.price}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {paymentStep === "confirm" && (
-                  <>
-                    <h3 className="text-lg font-bold mb-4">Konfirmasi Pembayaran</h3>
-                    <div className="bg-gray-100 p-4 rounded-lg mb-4">
-                      <div className="flex justify-between mb-2">
-                        <span className="text-gray-500">Metode Pembayaran</span>
-                        <span className="font-medium">
-                          {activeDetails === "qris" ? "QRIS" : activeDetails === "virtual_account" ? "Virtual Account" : "Kartu Kredit"}
-                        </span>
-                      </div>
-                      {activeDetails === "virtual_account" && selectedBank && (
-                        <div className="flex justify-between mb-2">
-                          <span className="text-gray-500">Bank</span>
-                          <span className="font-medium">{selectedBank.toUpperCase()}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Total</span>
-                        <span className="font-bold text-blue-600">{selectedTier?.price}</span>
-                      </div>
-                    </div>
-                    <div className={`${customStyles.infoBox} p-3 rounded-lg text-sm mb-4 flex items-center`}>
-                      <FaInfoCircle className="mr-2" /> Pastikan semua informasi sudah benar sebelum melanjutkan
-                    </div>
-                  </>
-                )}
-              </ModalBody>
-              <ModalFooter className="flex justify-between">
-                {paymentStep !== "selectMethod" && (
-                  <Button
-                    className={`${customStyles.secondaryButton} py-3 rounded-lg font-bold`}
-                    onPress={handleBackStep}
-                  >
-                    <FaArrowLeft className="mr-2" /> Kembali
-                  </Button>
-                )}
-                <Button
-                  className={`${customStyles.button} py-3 rounded-lg font-bold ${
-                    (paymentStep === "selectMethod" && !activeDetails) ||
-                    (paymentStep === "details" && activeDetails === "virtual_account" && !selectedBank)
-                      ? customStyles.disabledButton
-                      : ""
-                  }`}
-                  onPress={handleNextStep}
-                  disabled={
-                    (paymentStep === "selectMethod" && !activeDetails) ||
-                    (paymentStep === "details" && activeDetails === "virtual_account" && !selectedBank)
-                  }
+                <button 
+                  onClick={handleClosePaymentModal}
+                  className="text-white hover:text-blue-200"
                 >
-                  {paymentStep === "confirm" ? (
-                    <>
-                      <FaLock className="mr-2" /> Bayar Sekarang
-                    </>
-                  ) : (
-                    <>
-                      Lanjut <FaArrowRight className="ml-2" />
-                    </>
-                  )}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            
+            {/* Body */}
+            <div className="p-6">
+              {/* Order Summary */}
+              <div className="flex justify-between items-center mb-6 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <h3 className="font-medium">Total Pembayaran</h3>
+                  <p className="text-gray-500 text-sm">Termasuk PPN 11%</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-gray-500 line-through text-sm">Rp 500.000</p>
+                  <p className="text-blue-600 font-bold text-xl">Rp 299.000</p>
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <h3 className="text-lg font-bold mb-4">Metode Pembayaran</h3>
+              
+              <div className="space-y-3 mb-6">
+                {/* QRIS */}
+                <div className="payment-method-container">
+                  <div 
+                    className="payment-method bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm" 
+                    onClick={() => handleMethodSelect('qris')}
+                  >
+                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QRIS_logo.svg/1200px-QRIS_logo.svg.png" alt="QRIS" className="h-5" />
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="font-medium text-sm">QRIS</h3>
+                    </div>
+                    <i className="fas fa-chevron-down text-gray-400"></i>
+                  </div>
+                </div>
+                
+                {/* Virtual Account */}
+                <div className="payment-method-container">
+                  <div 
+                    className="payment-method bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm" 
+                    onClick={() => handleMethodSelect('virtual_account')}
+                  >
+                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                      <i className="fas fa-university text-blue-600"></i>
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="font-medium text-sm">Virtual Account</h3>
+                    </div>
+                    <i className="fas fa-chevron-down text-gray-400"></i>
+                  </div>
+                </div>
+                
+                {/* E-Wallets */}
+                <div className="payment-method-container">
+                  <div 
+                    className="payment-method bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm" 
+                    onClick={() => handleMethodSelect('ewallet')}
+                  >
+                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                      <i className="fas fa-wallet text-green-600"></i>
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="font-medium text-sm">E-Wallet</h3>
+                    </div>
+                    <i className="fas fa-chevron-down text-gray-400"></i>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={handleConfirmPayment}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
+              >
+                <i className="fas fa-check-circle mr-2"></i> Konfirmasi Pembayaran
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Processing Modal */}
-      <Modal 
-        isOpen={isProcessingModalOpen} 
-        onOpenChange={setIsProcessingModalOpen}
-        placement="center"
-        backdrop="blur"
-        hideCloseButton
-        isDismissable={false}
-        className="max-w-xs"
-      >
-        <ModalContent className={customStyles.modal}>
-          <ModalBody className="p-6 text-center">
+      {showProcessingModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="mb-4">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 w-full animate-pulse"></div>
+                <div className="loading-bar h-full bg-blue-500 w-full animate-pulse"></div>
               </div>
             </div>
             <h3 className="text-lg font-bold mb-2">Memproses Pembayaran</h3>
             <p className="text-gray-600">Harap tunggu sebentar...</p>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+          </div>
+        </div>
+      )}
 
       {/* Success Modal */}
-      <Modal 
-        isOpen={isSuccessModalOpen} 
-        onOpenChange={setIsSuccessModalOpen}
-        placement="center"
-        backdrop="blur"
-        className="max-w-xs"
-      >
-        <ModalContent className={`${customStyles.modal} rounded-lg`}>
-          <ModalHeader className="flex flex-col gap-1 text-center pt-6">
-            <div className="text-green-500 mb-4 mx-auto">
-              <FaCheckCircle className="text-5xl" />
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+            <div className="text-green-500 mb-4">
+              <i className="fas fa-check-circle text-5xl"></i>
             </div>
-            <h2 className="text-2xl font-bold">Pembayaran Berhasil!</h2>
-          </ModalHeader>
-          <ModalBody>
-            <p className="text-gray-600 mb-4 text-center">Terima kasih telah melakukan pembayaran.</p>
-            <div className="bg-gray-100 p-4 rounded-lg mb-4 text-left">
+            <h2 className="text-2xl font-bold mb-2">Pembayaran Berhasil!</h2>
+            <p className="text-gray-600 mb-4">Terima kasih telah melakukan pembayaran.</p>
+            
+            <div className="bg-gray-50 p-4 rounded-lg mb-4 text-left">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-500">Invoice</span>
-                <span className="font-mono">{invoiceNumber}</span>
+                <span className="font-mono">INV-{Math.floor(1000 + Math.random() * 9000)}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span className="text-gray-500">Metode</span>
-                <span className="font-medium">
-                  {activeDetails === "qris" ? "QRIS" : activeDetails === "virtual_account" ? "Virtual Account" : "Kartu Kredit"}
-                </span>
+                <span className="font-medium">{getMethodName(selectedMethod)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Total</span>
-                <span className="font-bold text-blue-600">{selectedTier?.price}</span>
+                <span className="font-bold text-blue-600">Rp 299.000</span>
               </div>
             </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button 
-              fullWidth 
-              className={`${customStyles.button} py-3 rounded-lg font-bold`}
-              onPress={() => setIsSuccessModalOpen(false)}
+            
+            <button 
+              onClick={handleCloseSuccessModal}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
             >
               Selesai
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      <Spacer y={10} />
-      <div className="flex py-2">
-        <p className="text-gray-500 text-center">
-          {locale.doYouLike}{" "}
-          <Link  
-            color="foreground"  
-            href={siteConfig.authors[0].twitter}  
-            underline="always"  
-            rel="noopener noreferrer nofollow"  
-            className="text-blue-400"
-          >
-            {locale.follow}
-          </Link>
-        </p>
-      </div>
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
