@@ -128,7 +128,7 @@ const PaymentModal = ({
         setInvoiceNumber(response.invoice);
       } else {
         setIsFailed(true);
-        setError  setErrorMessage(response.message || 'Terjadi kesalahan saat memproses pembayaran.');
+        setErrorMessage(response.message || 'Terjadi kesalahan saat memproses pembayaran.');
       }
     } catch (error) {
       setIsProcessing(false);
