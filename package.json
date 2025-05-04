@@ -33,7 +33,9 @@
     "react-icons": "^5.0.1",
     "react-rough-notation": "^1.0.5",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0"
   },
   "devDependencies": {
     "@types/negotiator": "^0.6.3",
