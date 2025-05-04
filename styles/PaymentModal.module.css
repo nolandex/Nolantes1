@@ -1,0 +1,73 @@
+/* /styles/PaymentModal.module.css */
+.paymentMethod {
+  transition: all 0.2s ease;
+}
+.paymentMethod:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.loadingBar {
+  width: 0%;
+  transition: width 1s ease-in-out;
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #10b981;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: flex;
+  z-index: 1000;
+}
+.paymentLogo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.bankOption {
+  transition: all 0.2s ease;
+}
+.bankOption:hover {
+  background-color: #f8fafc;
+}
+.paymentOption {
+  transition: all 0.2s ease;
+}
+.paymentOption:hover {
+  background-color: #f8fafc;
+}
+.paymentDetails {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+.paymentDetails.active {
+  max-height: 500px;
+}
+.methodGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.methodItem {
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+.methodItem:hover {
+  background-color: #f3f4f6;
+}
+.methodLogo {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  object-fit: contain;
+}
+.paymentDetailsContent {
+  padding: 12px 0;
+  margin-left: 0;
+  border-left: none;
+}
