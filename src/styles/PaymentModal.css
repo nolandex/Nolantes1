@@ -1,0 +1,14 @@
+.payment-method { transition: all 0.2s; }
+.payment-method:hover { transform: translateY(-3px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.loading-bar { width: 0; transition: width 1s ease-in-out; }
+.toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; display: none; z-index: 1000; }
+.payment-logo { width: 24px; height: 24px; object-fit: contain; }
+.bank-option, .payment-option { transition: all 0.2s; }
+.bank-option:hover, .payment-option:hover { background: #f8fafc; }
+.payment-details { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+.payment-details.active { max-height: 500px; }
+.method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.method-item { padding: 8px; border-radius: 8px; cursor: pointer; text-align: center; }
+.method-item:hover { background: #f3f4f6; }
+.method-logo { width: 32px; height: 32px; margin: 0 auto; object-fit: contain; }
+.payment-details-content { padding: 12px 0; }
