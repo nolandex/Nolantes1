@@ -3,11 +3,23 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheckCircle, faCopy, faInfoCircle, faExclamationCircle, faUniversity, faWallet, faStore, faCreditCard, faLock, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faCheckCircle,
+  faCopy,
+  faInfoCircle,
+  faExclamationCircle,
+  faUniversity,
+  faWallet,
+  faStore,
+  faCreditCard,
+  faLock,
+  faArrowRight,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface Plan {
   name: string;
- uşproduct: string;
+  product: string;
   amount: number;
 }
 
@@ -60,7 +72,7 @@ const PaymentModal = ({
 
   const generatePaymentCode = (method: string) => {
     if (method === 'va' && selectedBank) {
-      const prefix = selectedBank === 'BCA' ? '390' : selectedBank === 'Mandiri' ? '700' : '800';
+      const prefix = selectedBank === 'BCA' ? '390' : selectedBank === 'Mandi ri' ? '700' : '800';
       const code = `${prefix}${Math.floor(100000000 + Math.random() * 900000000)}`;
       setVaNumber(code);
       return code;
@@ -196,7 +208,7 @@ const PaymentModal = ({
               >
                 <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
                   <Image
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QRIS_logo.svg/1200px-QRIS_logo.svg.png"
+                    src="/images/qris-logo.png"
                     alt="QRIS"
                     width={24}
                     height={24}
@@ -260,18 +272,22 @@ const PaymentModal = ({
                   <div className="payment-details-content p-3">
                     <h4 className="font-medium mb-3 text-center">Pilih Bank</h4>
                     <div className="grid grid-cols-3 gap-2 mb-4">
-                      {['BCA', 'Mandiri', 'BNI'].map((bank) => (
+                      {[
+                        { name: 'BCA', logo: '/images/bca-logo.png' },
+                        { name: 'Mandiri', logo: '/images/mandiri-logo.png' },
+                        { name: 'BNI', logo: '/images/bni-logo.png' },
+                      ].map((bank) => (
                         <button
-                          key={bank}
+                          key={bank.name}
                           onClick={() => {
-                            setSelectedBank(bank);
+                            setSelectedBank(bank.name);
                             generatePaymentCode('va');
                           }}
-                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedBank === bank ? 'bg-blue-100' : ''}`}
+                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedBank === bank.name ? 'bg-blue-100' : ''}`}
                         >
                           <Image
-                            src={`https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png`}
-                            alt={bank}
+                            src={bank.logo}
+                            alt={bank.name}
                             width={32}
                             height={32}
                             className="method-logo mx-auto object-contain"
@@ -343,18 +359,22 @@ const PaymentModal = ({
                   <div className="payment-details-content p-3">
                     <h4 className="font-medium mb-3 text-center">Pilih E-Wallet</h4>
                     <div className="grid grid-cols-3 gap-2 mb-4">
-                      {['DANA', 'GoPay', 'OVO'].map((wallet) => (
+                      {[
+                        { name: 'DANA', logo: '/images/dana-logo.png' },
+                        { name: 'GoPay', logo: '/images/gopay-logo.png' },
+                        { name: 'OVO', logo: '/images/ovo-logo.png' },
+                      ].map((wallet) => (
                         <button
-                          key={wallet}
+                          key={wallet.name}
                           onClick={() => {
-                            setSelectedWallet(wallet);
+                            setSelectedWallet(wallet.name);
                             generatePaymentCode('ewallet');
                           }}
-                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedWallet === wallet ? 'bg-blue-100' : ''}`}
+                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedWallet === wallet.name ? 'bg-blue-100' : ''}`}
                         >
                           <Image
-                            src={`https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png`}
-                            alt={wallet}
+                            src={wallet.logo}
+                            alt={wallet.name}
                             width={32}
                             height={32}
                             className="method-logo mx-auto object-contain"
@@ -426,18 +446,21 @@ const PaymentModal = ({
                   <div className="payment-details-content p-3">
                     <h4 className="font-medium mb-3 text-center">Pilih Retail</h4>
                     <div className="grid grid-cols-2 gap-2 mb-4">
-                      {['Alfamart', 'Indomaret'].map((retail) => (
+                      {[
+                        { name: 'Alfamart', logo: '/images/alfamart-logo.png' },
+                        { name: 'Indomaret', logo: '/images/indomaret-logo.png' },
+                      ].map((retail) => (
                         <button
-                          key={retail}
+                          key={retail.name}
                           onClick={() => {
-                            setSelectedRetail(retail);
+                            setSelectedRetail(retail.name);
                             generatePaymentCode('retail');
                           }}
-                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedRetail === retail ? 'bg-blue-100' : ''}`}
+                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedRetail === retail.name ? 'bg-blue-100' : ''}`}
                         >
                           <Image
-                            src={`https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Alfamart_logo_2019.svg/1200px-Alfamart_logo_2019.svg.png`}
-                            alt={retail}
+                            src={retail.logo}
+                            alt={retail.name}
                             width={32}
                             height={32}
                             className="method-logo mx-auto object-contain"
@@ -467,7 +490,7 @@ const PaymentModal = ({
                           </div>
                         </div>
 
-                        <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800	short mb-4">
+                        <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 mb-4">
                           <p>
                             <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" /> Kode pembayaran akan kadaluarsa dalam 24 jam
                           </p>
@@ -489,8 +512,6 @@ const PaymentModal = ({
             {/* Credit Card */}
             <div className="payment-method-container">
               <button
-
-
                 onClick={() => setActiveMethod(activeMethod === 'cc' ? null : 'cc')}
                 className="payment-method w-full bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
