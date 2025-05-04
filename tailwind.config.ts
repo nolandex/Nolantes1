@@ -21,30 +21,15 @@ const config = {
     },
     extend: {
       colors: {
-        // Add forced light mode colors
-        payment: {
-          light: {
-            bg: '#ffffff',
-            card: '#f9fafb',
-            border: '#e5e7eb',
-            text: {
-              primary: '#111827',
-              secondary: '#4b5563',
-              muted: '#6b7280',
-            },
-            primary: {
-              main: '#3b82f6',
-              light: '#93c5fd',
-              contrast: '#ffffff',
-            },
-          }
-        },
-        // Keep your existing color definitions
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        // primary: {
+        //   DEFAULT: "hsl(var(--primary))",
+        //   foreground: "hsl(var(--primary-foreground))",
+        // },
         primary: {
           foreground: "#FFFFFF",
           DEFAULT: "#3B82F6",
@@ -105,14 +90,7 @@ const config = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"), 
-    nextui(),
-    // Add this plugin to force light mode
-    function({ addVariant }) {
-      addVariant('force-light', '.force-light &');
-    }
-  ],
+  plugins: [require("tailwindcss-animate"), nextui()],
 } satisfies Config
 
-export default config;
+export default config
