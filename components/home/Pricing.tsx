@@ -10,6 +10,14 @@ import {
   Divider,
   Link,
   Spacer,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  Select,
+  SelectItem
 } from "@nextui-org/react";
 import { siteConfig } from "@/config/site";
 import { ALL_TIERS } from "@/config/tiers";
@@ -32,26 +40,42 @@ interface PricingProps {
 
 const Pricing = ({ id, locale, langName }: PricingProps) => {
   const [activeTab, setActiveTab] = useState<"setup" | "website">("setup");
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  
   const TIERS = ALL_TIERS[`TIERS_${langName.toUpperCase()}`];
-  const whatsappLink =
-    "https://wa.me/6285156779923?text=Hi%2C%20I'm%20interested%20in%20your%20business%20setup%20services";
-
+  
   // Filter tier berdasarkan activeTab
   const selectedTier = TIERS?.find(
     (tier: any) =>
       tier.key === (activeTab === "setup" ? TiersEnum.Free : TiersEnum.Customize)
   );
 
-  // Debugging logs
-  console.log("langName:", langName);
-  console.log("activeTab:", activeTab);
-  console.log("TIERS:", TIERS);
-  console.log("selectedTier:", selectedTier);
+  const handlePayment = () => {
+    // Here you would typically integrate with a payment gateway like Midtrans
+    console.log("Processing payment with:", {
+      tier: selectedTier?.title,
+      amount: selectedTier?.price,
+      paymentMethod,
+      customer: { name, email }
+    });
+    
+    // For now, we'll just show a success message and close the modal
+    alert(`Payment for ${selectedTier?.title} initiated successfully!`);
+    setIsPaymentModalOpen(false);
+    
+    // Reset form
+    setPaymentMethod("");
+    setEmail("");
+    setName("");
+  };
 
   return (
-    <section
-      id={id}
-      className="flex flex-col justify-center max-w-3xl items-center pt-12"
+    <section  
+      id={id}  
+      className="flex flex-col justify-center max-w-3xl items-center pt-12"  
     >
       <div className="flex flex-col text-center max-w-lg">
         <h2 className="text-center text-white">
@@ -68,11 +92,11 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
       <Spacer y={6} />
       <div className="w-[85%] max-w-lg">
         {selectedTier ? (
-          <Card
-            key={selectedTier.key}
-            className="p-2 bg-gradient-to-br from-gray-900 to-gray-800 rounded-[8px]"
-            shadow="md"
-            radius="md"
+          <Card  
+            key={selectedTier.key}  
+            className="p-2 bg-gradient-to-br from-gray-900 to-gray-800 rounded-[8px]"  
+            shadow="md"  
+            radius="md"  
           >
             <CardHeader className="flex flex-col items-start gap-1 pb-0">
               {/* Tab Navigation */}
@@ -133,14 +157,11 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
             <CardFooter>
               <Button
                 fullWidth
-                as={Link}
                 color={selectedTier.buttonColor || "primary"}
-                href={whatsappLink}
                 variant={selectedTier.buttonVariant || "solid"}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
                 radius="md"
                 className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-[8px] hover:from-blue-700 hover:to-blue-600 transition-all duration-200"
+                onPress={() => setIsPaymentModalOpen(true)}
               >
                 {selectedTier.buttonText || "Buy"}
               </Button>
@@ -152,15 +173,85 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
           </p>
         )}
       </div>
+      
+      {/* Payment Modal */}
+      <Modal 
+        isOpen={isPaymentModalOpen} 
+        onOpenChange={setIsPaymentModalOpen}
+        placement="center"
+        backdrop="blur"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Complete Your Purchase
+              </ModalHeader>
+              <ModalBody>
+                <p>You're purchasing: <strong>{selectedTier?.title}</strong></p>
+                <p>Amount: <strong>{selectedTier?.price}</strong></p>
+                
+                <Input
+                  label="Full Name"
+                  placeholder="Enter your full name"
+                  value={name}
+                  onValueChange={setName}
+                  isRequired
+                />
+                
+                <Input
+                  label="Email"
+                  placeholder="Enter your email"
+                  type="email"
+                  value={email}
+                  onValueChange={setEmail}
+                  isRequired
+                />
+                
+                <Select
+                  label="Payment Method"
+                  placeholder="Select a payment method"
+                  selectedKeys={paymentMethod ? [paymentMethod] : []}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  isRequired
+                >
+                  <SelectItem key="credit_card" value="credit_card">
+                    Credit Card
+                  </SelectItem>
+                  <SelectItem key="bank_transfer" value="bank_transfer">
+                    Bank Transfer
+                  </SelectItem>
+                  <SelectItem key="ewallet" value="ewallet">
+                    E-Wallet (OVO, GoPay, etc.)
+                  </SelectItem>
+                </Select>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button 
+                  color="primary" 
+                  onPress={handlePayment}
+                  isDisabled={!paymentMethod || !email || !name}
+                >
+                  Proceed to Payment
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
       <Spacer y={10} />
       <div className="flex py-2">
         <p className="text-gray-500 text-center">
           {locale.doYouLike}{" "}
-          <Link
-            color="foreground"
-            href={siteConfig.authors[0].twitter}
-            underline="always"
-            rel="noopener noreferrer nofollow"
+          <Link  
+            color="foreground"  
+            href={siteConfig.authors[0].twitter}  
+            underline="always"  
+            rel="noopener noreferrer nofollow"  
           >
             {locale.follow}
           </Link>
