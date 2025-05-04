@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, faCheckCircle, faCopy, faInfoCircle, faExclamationCircle, faUniversity, faWallet, faStore, faCreditCard, faLock, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 interface Plan {
   name: string;
-  product: string;
+ uşproduct: string;
   amount: number;
 }
 
@@ -63,9 +65,13 @@ const PaymentModal = ({
       setVaNumber(code);
       return code;
     } else if (method === 'ewallet' && selectedWallet) {
-      return `08${Math.floor(100000000 + Math.random() * 900000000)}`;
+      const code = `08${Math.floor(100000000 + Math.random() * 900000000)}`;
+      setPaymentCode(code);
+      return code;
     } else if (method === 'retail' && selectedRetail) {
-      return `${selectedRetail.slice(0, 4).toUpperCase()}${Math.floor(100000 + Math.random() * 900000)}`;
+      const code = `${selectedRetail.slice(0, 4).toUpperCase()}${Math.floor(100000 + Math.random() * 900000)}`;
+      setPaymentCode(code);
+      return code;
     }
     return '';
   };
@@ -82,22 +88,33 @@ const PaymentModal = ({
       setIsProcessing(false);
       setIsSuccess(true);
       setInvoiceNumber(`INV-${Date.now().toString().slice(-8)}`);
-    }, 2000);
+    }, 1500);
+  };
+
+  const getMethodName = (method: string | null) => {
+    const methods: { [key: string]: string } = {
+      qris: 'QRIS',
+      va: 'Virtual Account',
+      ewallet: 'E-Wallet',
+      retail: 'Retail',
+      cc: 'Kartu Kredit',
+    };
+    return methods[method || ''] || 'Pembayaran';
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      {/* Processing Overlay */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      {/* Processing Modal */}
       {isProcessing && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="mb-4">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="loading-bar h-full bg-blue-500" 
-                  style={{ width: '100%', transition: 'width 1s ease-in-out' }}
+                <div
+                  className="h-full bg-blue-500 transition-all duration-1000 ease-in-out"
+                  style={{ width: '100%' }}
                 ></div>
               </div>
             </div>
@@ -109,10 +126,10 @@ const PaymentModal = ({
 
       {/* Success Modal */}
       {isSuccess && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="text-green-500 mb-4">
-              <i className="fas fa-check-circle text-5xl"></i>
+              <FontAwesomeIcon icon={faCheckCircle} className="text-5xl" />
             </div>
             <h2 className="text-2xl font-bold mb-2">Pembayaran Berhasil!</h2>
             <p className="text-gray-600 mb-4">Terima kasih telah melakukan pembayaran.</p>
@@ -123,13 +140,7 @@ const PaymentModal = ({
               </div>
               <div className="flex justify-between mb-2">
                 <span className="text-gray-500">Metode</span>
-                <span className="font-medium">
-                  {activeMethod === 'qris' ? 'QRIS' : 
-                   activeMethod === 'va' ? 'Virtual Account' : 
-                   activeMethod === 'ewallet' ? 'E-Wallet' : 
-                   activeMethod === 'retail' ? 'Retail' : 
-                   activeMethod === 'cc' ? 'Kartu Kredit' : ''}
-                </span>
+                <span className="font-medium">{getMethodName(activeMethod)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Total</span>
@@ -147,15 +158,15 @@ const PaymentModal = ({
       )}
 
       {/* Main Payment Modal */}
-      <div className="w-full max-w-md overflow-y-auto rounded-2xl bg-white text-gray-800 shadow-xl max-h-[90vh]">
-        <div className="rounded-t-2xl bg-blue-600 p-6 text-white">
+      <div className="w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-xl max-h-[90vh]">
+        <div className="bg-blue-600 p-6 text-white rounded-t-xl">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-xl font-bold">{plan.name}</h2>
               <p className="text-blue-100 text-sm mt-1">{plan.product}</p>
             </div>
             <button onClick={onClose} className="text-white hover:text-blue-200">
-              <i className="fas fa-times"></i>
+              <FontAwesomeIcon icon={faTimes} />
             </button>
           </div>
         </div>
@@ -168,440 +179,388 @@ const PaymentModal = ({
               <p className="text-gray-500 text-sm">Termasuk PPN 11%</p>
             </div>
             <div className="text-right">
-              <p className="text-gray-500 line-through text-sm">
-                {formatRupiah(plan.amount * 1.67)}
-              </p>
-              <p className="text-blue-600 font-bold text-xl">
-                {formatRupiah(plan.amount)}
-              </p>
+              <p className="text-gray-500 line-through text-sm">{formatRupiah(plan.amount * 1.67)}</p>
+              <p className="text-blue-600 font-bold text-xl">{formatRupiah(plan.amount)}</p>
             </div>
           </div>
 
           {/* Payment Methods */}
           <h3 className="text-lg font-bold mb-4">Metode Pembayaran</h3>
-          
+
           <div className="space-y-3 mb-6">
             {/* QRIS */}
-            <div className="overflow-hidden">
+            <div className="payment-method-container">
               <button
                 onClick={() => setActiveMethod(activeMethod === 'qris' ? null : 'qris')}
-                className={`w-full flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
-                  activeMethod === 'qris'
-                    ? 'bg-blue-50 border-l-4 border-blue-500'
-                    : 'bg-white border border-gray-200 hover:border-blue-300'
-                }`}
+                className="payment-method w-full bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
-                    activeMethod === 'qris' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <Image 
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QRIS_logo.svg/1200px-QRIS_logo.svg.png" 
-                      alt="QRIS" 
-                      width={24} 
-                      height={24}
-                      className="h-5"
-                    />
-                  </div>
-                  <span className="font-medium text-sm">QRIS</span>
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                  <Image
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QRIS_logo.svg/1200px-QRIS_logo.svg.png"
+                    alt="QRIS"
+                    width={24}
+                    height={24}
+                    className="h-5"
+                  />
                 </div>
-                <span className={`transition-transform duration-300 text-gray-500 ${
-                  activeMethod === 'qris' ? 'rotate-180' : ''
-                }`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </span>
+                <div className="flex-grow">
+                  <h3 className="font-medium text-sm">QRIS</h3>
+                </div>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className={`text-gray-400 transform transition-transform duration-300 ${activeMethod === 'qris' ? 'rotate-180' : ''}`}
+                />
               </button>
-              
+
               {activeMethod === 'qris' && (
-                <div className="mt-1 rounded-b-lg border border-t-0 border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 animate-fadeIn">
-                  <div className="text-center mb-4">
-                    <div className="qr-code mx-auto w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg mb-3 flex items-center justify-center">
-                      [QR Code]
+                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                  <div className="payment-details-content p-3">
+                    <div className="text-center mb-4">
+                      <div className="qr-code mx-auto w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg mb-3"></div>
+                      <p className="text-sm text-gray-500">Scan QR code menggunakan aplikasi mobile banking atau e-wallet</p>
                     </div>
-                    <p className="text-sm text-gray-500">Scan QR code menggunakan aplikasi mobile banking atau e-wallet</p>
+
+                    <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mb-4">
+                      <p>
+                        <FontAwesomeIcon icon={faInfoCircle} className="mr-2" /> QR code akan kadaluarsa dalam 24 jam
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={processPayment}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
+                    >
+                      <FontAwesomeIcon icon={faCheckCircle} className="mr-2" /> Saya Sudah Bayar
+                    </button>
                   </div>
-                  
-                  <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mb-4">
-                    <p><i className="fas fa-info-circle mr-2"></i> QR code akan kadaluarsa dalam 24 jam</p>
-                  </div>
-                  
-                  <button
-                    onClick={processPayment}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
-                  >
-                    <i className="fas fa-check-circle mr-2"></i> Saya Sudah Bayar
-                  </button>
                 </div>
               )}
             </div>
-            
+
             {/* Virtual Account */}
-            <div className="overflow-hidden">
+            <div className="payment-method-container">
               <button
                 onClick={() => setActiveMethod(activeMethod === 'va' ? null : 'va')}
-                className={`w-full flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
-                  activeMethod === 'va'
-                    ? 'bg-blue-50 border-l-4 border-blue-500'
-                    : 'bg-white border border-gray-200 hover:border-blue-300'
-                }`}
+                className="payment-method w-full bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
-                    activeMethod === 'va' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <i className="fas fa-university text-blue-600"></i>
-                  </div>
-                  <span className="font-medium text-sm">Virtual Account</span>
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                  <FontAwesomeIcon icon={faUniversity} className="text-blue-600" />
                 </div>
-                <span className={`transition-transform duration-300 text-gray-500 ${
-                  activeMethod === 'va' ? 'rotate-180' : ''
-                }`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </span>
+                <div className="flex-grow">
+                  <h3 className="font-medium text-sm">Virtual Account</h3>
+                </div>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className={`text-gray-400 transform transition-transform duration-300 ${activeMethod === 'va' ? 'rotate-180' : ''}`}
+                />
               </button>
-              
+
               {activeMethod === 'va' && (
-                <div className="mt-1 rounded-b-lg border border-t-0 border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 animate-fadeIn">
-                  <h4 className="font-medium mb-3 text-center">Pilih Bank</h4>
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    {['BCA', 'Mandiri', 'BNI'].map((bank) => (
-                      <button
-                        key={bank}
-                        onClick={() => {
-                          setSelectedBank(bank);
-                          generatePaymentCode('va');
-                        }}
-                        className={`flex flex-col items-center rounded-lg border p-3 transition ${
-                          selectedBank === bank
-                            ? 'bg-blue-100 border-blue-400 shadow-sm'
-                            : 'bg-white border-gray-200 hover:border-blue-300'
-                        }`}
-                      >
-                        <Image
-                          src={`https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png`}
-                          alt={bank}
-                          width={36}
-                          height={36}
-                          className="h-8 object-contain"
-                        />
-                        <span className="mt-2 text-xs font-medium">{bank}</span>
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {selectedBank && (
-                    <>
-                      <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                        <div className="mb-3">
-                          <label className="block text-gray-500 text-sm mb-1">Nomor Virtual Account</label>
-                          <div className="flex items-center">
-                            <span className="font-mono bg-gray-100 p-2 rounded flex-1">
-                              {vaNumber}
-                            </span>
-                            <button 
-                              onClick={() => copyToClipboard(vaNumber)}
-                              className="text-blue-600 hover:text-blue-800 ml-2"
-                            >
-                              <i className="fas fa-copy"></i>
-                            </button>
+                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                  <div className="payment-details-content p-3">
+                    <h4 className="font-medium mb-3 text-center">Pilih Bank</h4>
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      {['BCA', 'Mandiri', 'BNI'].map((bank) => (
+                        <button
+                          key={bank}
+                          onClick={() => {
+                            setSelectedBank(bank);
+                            generatePaymentCode('va');
+                          }}
+                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedBank === bank ? 'bg-blue-100' : ''}`}
+                        >
+                          <Image
+                            src={`https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png`}
+                            alt={bank}
+                            width={32}
+                            height={32}
+                            className="method-logo mx-auto object-contain"
+                          />
+                        </button>
+                      ))}
+                    </div>
+
+                    {selectedBank && (
+                      <>
+                        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                          <div className="mb-3">
+                            <label className="block text-gray-500 text-sm mb-1">Nomor Virtual Account</label>
+                            <div className="flex items-center">
+                              <span className="font-mono va-number bg-gray-100 p-2 rounded flex-1">{vaNumber}</span>
+                              <button
+                                onClick={() => copyToClipboard(vaNumber)}
+                                className="text-blue-600 hover:text-blue-800 ml-2"
+                              >
+                                <FontAwesomeIcon icon={faCopy} />
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-gray-500 text-sm mb-1">Jumlah Transfer</label>
+                            <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
                           </div>
                         </div>
-                        <div>
-                          <label className="block text-gray-500 text-sm mb-1">Jumlah Transfer</label>
-                          <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
+
+                        <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 mb-4">
+                          <p>
+                            <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" /> Transfer tepat sesuai nominal untuk proses otomatis
+                          </p>
                         </div>
-                      </div>
-                      
-                      <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 mb-4">
-                        <p><i className="fas fa-exclamation-circle mr-2"></i> Transfer tepat sesuai nominal untuk proses otomatis</p>
-                      </div>
-                      
-                      <button
-                        onClick={processPayment}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
-                      >
-                        <i className="fas fa-check-circle mr-2"></i> Konfirmasi Pembayaran
-                      </button>
-                    </>
-                  )}
+
+                        <button
+                          onClick={processPayment}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
+                        >
+                          <FontAwesomeIcon icon={faCheckCircle} className="mr-2" /> Konfirmasi Pembayaran
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-            
+
             {/* E-Wallet */}
-            <div className="overflow-hidden">
+            <div className="payment-method-container">
               <button
                 onClick={() => setActiveMethod(activeMethod === 'ewallet' ? null : 'ewallet')}
-                className={`w-full flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
-                  activeMethod === 'ewallet'
-                    ? 'bg-blue-50 border-l-4 border-blue-500'
-                    : 'bg-white border border-gray-200 hover:border-blue-300'
-                }`}
+                className="payment-method w-full bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
-                    activeMethod === 'ewallet' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <i className="fas fa-wallet text-green-600"></i>
-                  </div>
-                  <span className="font-medium text-sm">E-Wallet</span>
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                  <FontAwesomeIcon icon={faWallet} className="text-green-600" />
                 </div>
-                <span className={`transition-transform duration-300 text-gray-500 ${
-                  activeMethod === 'ewallet' ? 'rotate-180' : ''
-                }`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </span>
+                <div className="flex-grow">
+                  <h3 className="font-medium text-sm">E-Wallet</h3>
+                </div>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className={`text-gray-400 transform transition-transform duration-300 ${activeMethod === 'ewallet' ? 'rotate-180' : ''}`}
+                />
               </button>
-              
+
               {activeMethod === 'ewallet' && (
-                <div className="mt-1 rounded-b-lg border border-t-0 border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 animate-fadeIn">
-                  <h4 className="font-medium mb-3 text-center">Pilih E-Wallet</h4>
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    {['DANA', 'GoPay', 'OVO'].map((wallet) => (
-                      <button
-                        key={wallet}
-                        onClick={() => {
-                          setSelectedWallet(wallet);
-                          generatePaymentCode('ewallet');
-                        }}
-                        className={`flex flex-col items-center rounded-lg border p-3 transition ${
-                          selectedWallet === wallet
-                            ? 'bg-blue-100 border-blue-400 shadow-sm'
-                            : 'bg-white border-gray-200 hover:border-blue-300'
-                        }`}
-                      >
-                        <Image
-                          src={`https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png`}
-                          alt={wallet}
-                          width={36}
-                          height={36}
-                          className="h-8 object-contain"
-                        />
-                        <span className="mt-2 text-xs font-medium">{wallet}</span>
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {selectedWallet && (
-                    <>
-                      <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                        <div className="mb-3">
-                          <label className="block text-gray-500 text-sm mb-1">Nomor {selectedWallet}</label>
-                          <div className="flex items-center">
-                            <span className="font-mono bg-gray-100 p-2 rounded flex-1">
-                              {paymentCode}
-                            </span>
-                            <button 
-                              onClick={() => copyToClipboard(paymentCode)}
-                              className="text-blue-600 hover:text-blue-800 ml-2"
-                            >
-                              <i className="fas fa-copy"></i>
-                            </button>
+                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                  <div className="payment-details-content p-3">
+                    <h4 className="font-medium mb-3 text-center">Pilih E-Wallet</h4>
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      {['DANA', 'GoPay', 'OVO'].map((wallet) => (
+                        <button
+                          key={wallet}
+                          onClick={() => {
+                            setSelectedWallet(wallet);
+                            generatePaymentCode('ewallet');
+                          }}
+                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedWallet === wallet ? 'bg-blue-100' : ''}`}
+                        >
+                          <Image
+                            src={`https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png`}
+                            alt={wallet}
+                            width={32}
+                            height={32}
+                            className="method-logo mx-auto object-contain"
+                          />
+                        </button>
+                      ))}
+                    </div>
+
+                    {selectedWallet && (
+                      <>
+                        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                          <div className="mb-3">
+                            <label className="block text-gray-500 text-sm mb-1">Nomor E-Wallet</label>
+                            <div className="flex items-center">
+                              <span className="font-mono ewallet-number bg-gray-100 p-2 rounded flex-1">{paymentCode}</span>
+                              <button
+                                onClick={() => copyToClipboard(paymentCode)}
+                                className="text-blue-600 hover:text-blue-800 ml-2"
+                              >
+                                <FontAwesomeIcon icon={faCopy} />
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-gray-500 text-sm mb-1">Jumlah Transfer</label>
+                            <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
                           </div>
                         </div>
-                        <div>
-                          <label className="block text-gray-500 text-sm mb-1">Jumlah Transfer</label>
-                          <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
+
+                        <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mb-4">
+                          <p>
+                            <FontAwesomeIcon icon={faInfoCircle} className="mr-2" /> Anda akan diarahkan ke aplikasi untuk menyelesaikan pembayaran
+                          </p>
                         </div>
-                      </div>
-                      
-                      <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mb-4">
-                        <p><i className="fas fa-info-circle mr-2"></i> Anda akan diarahkan ke aplikasi untuk menyelesaikan pembayaran</p>
-                      </div>
-                      
-                      <button
-                        onClick={processPayment}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
-                      >
-                        <i className="fas fa-arrow-right mr-2"></i> Lanjut ke Pembayaran
-                      </button>
-                    </>
-                  )}
+
+                        <button
+                          onClick={processPayment}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
+                        >
+                          <FontAwesomeIcon icon={faArrowRight} className="mr-2" /> Lanjut ke Pembayaran
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-            
+
             {/* Retail */}
-            <div className="overflow-hidden">
+            <div className="payment-method-container">
               <button
                 onClick={() => setActiveMethod(activeMethod === 'retail' ? null : 'retail')}
-                className={`w-full flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
-                  activeMethod === 'retail'
-                    ? 'bg-blue-50 border-l-4 border-blue-500'
-                    : 'bg-white border border-gray-200 hover:border-blue-300'
-                }`}
+                className="payment-method w-full bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
-                    activeMethod === 'retail' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <i className="fas fa-store text-orange-600"></i>
-                  </div>
-                  <span className="font-medium text-sm">Retail</span>
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                  <FontAwesomeIcon icon={faStore} className="text-orange-600" />
                 </div>
-                <span className={`transition-transform duration-300 text-gray-500 ${
-                  activeMethod === 'retail' ? 'rotate-180' : ''
-                }`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </span>
+                <div className="flex-grow">
+                  <h3 className="font-medium text-sm">Retail</h3>
+                </div>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className={`text-gray-400 transform transition-transform duration-300 ${activeMethod === 'retail' ? 'rotate-180' : ''}`}
+                />
               </button>
-              
+
               {activeMethod === 'retail' && (
-                <div className="mt-1 rounded-b-lg border border-t-0 border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 animate-fadeIn">
-                  <h4 className="font-medium mb-3 text-center">Pilih Retail</h4>
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    {['Alfamart', 'Indomaret'].map((retail) => (
-                      <button
-                        key={retail}
-                        onClick={() => {
-                          setSelectedRetail(retail);
-                          generatePaymentCode('retail');
-                        }}
-                        className={`flex flex-col items-center rounded-lg border p-3 transition ${
-                          selectedRetail === retail
-                            ? 'bg-blue-100 border-blue-400 shadow-sm'
-                            : 'bg-white border-gray-200 hover:border-blue-300'
-                        }`}
-                      >
-                        <Image
-                          src={`https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Alfamart_logo_2019.svg/1200px-Alfamart_logo_2019.svg.png`}
-                          alt={retail}
-                          width={36}
-                          height={36}
-                          className="h-8 object-contain"
-                        />
-                        <span className="mt-2 text-xs font-medium">{retail}</span>
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {selectedRetail && (
-                    <>
-                      <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                        <div className="mb-3">
-                          <label className="block text-gray-500 text-sm mb-1">Kode Pembayaran</label>
-                          <div className="flex items-center">
-                            <span className="font-mono bg-gray-100 p-2 rounded flex-1">
-                              {paymentCode}
-                            </span>
-                            <button 
-                              onClick={() => copyToClipboard(paymentCode)}
-                              className="text-blue-600 hover:text-blue-800 ml-2"
-                            >
-                              <i className="fas fa-copy"></i>
-                            </button>
+                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                  <div className="payment-details-content p-3">
+                    <h4 className="font-medium mb-3 text-center">Pilih Retail</h4>
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                      {['Alfamart', 'Indomaret'].map((retail) => (
+                        <button
+                          key={retail}
+                          onClick={() => {
+                            setSelectedRetail(retail);
+                            generatePaymentCode('retail');
+                          }}
+                          className={`method-item p-2 rounded-lg cursor-pointer text-center hover:bg-gray-100 transition-all duration-200 ${selectedRetail === retail ? 'bg-blue-100' : ''}`}
+                        >
+                          <Image
+                            src={`https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Alfamart_logo_2019.svg/1200px-Alfamart_logo_2019.svg.png`}
+                            alt={retail}
+                            width={32}
+                            height={32}
+                            className="method-logo mx-auto object-contain"
+                          />
+                        </button>
+                      ))}
+                    </div>
+
+                    {selectedRetail && (
+                      <>
+                        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                          <div className="mb-3">
+                            <label className="block text-gray-500 text-sm mb-1">Kode Pembayaran</label>
+                            <div className="flex items-center">
+                              <span className="font-mono retail-code bg-gray-100 p-2 rounded flex-1">{paymentCode}</span>
+                              <button
+                                onClick={() => copyToClipboard(paymentCode)}
+                                className="text-blue-600 hover:text-blue-800 ml-2"
+                              >
+                                <FontAwesomeIcon icon={faCopy} />
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-gray-500 text-sm mb-1">Jumlah Pembayaran</label>
+                            <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
                           </div>
                         </div>
-                        <div>
-                          <label className="block text-gray-500 text-sm mb-1">Jumlah Pembayaran</label>
-                          <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
+
+                        <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800	short mb-4">
+                          <p>
+                            <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" /> Kode pembayaran akan kadaluarsa dalam 24 jam
+                          </p>
                         </div>
-                      </div>
-                      
-                      <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 mb-4">
-                        <p><i className="fas fa-exclamation-circle mr-2"></i> Kode pembayaran akan kadaluarsa dalam 24 jam</p>
-                      </div>
-                      
-                      <button
-                        onClick={processPayment}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
-                      >
-                        <i className="fas fa-check-circle mr-2"></i> Konfirmasi
-                      </button>
-                    </>
-                  )}
+
+                        <button
+                          onClick={processPayment}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
+                        >
+                          <FontAwesomeIcon icon={faCheckCircle} className="mr-2" /> Konfirmasi
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-            
+
             {/* Credit Card */}
-            <div className="overflow-hidden">
+            <div className="payment-method-container">
               <button
+
+
                 onClick={() => setActiveMethod(activeMethod === 'cc' ? null : 'cc')}
-                className={`w-full flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
-                  activeMethod === 'cc'
-                    ? 'bg-blue-50 border-l-4 border-blue-500'
-                    : 'bg-white border border-gray-200 hover:border-blue-300'
-                }`}
+                className="payment-method w-full bg-white rounded-lg p-3 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
-                    activeMethod === 'cc' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <i className="far fa-credit-card text-purple-600"></i>
-                  </div>
-                  <span className="font-medium text-sm">Kartu Kredit</span>
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                  <FontAwesomeIcon icon={faCreditCard} className="text-purple-600" />
                 </div>
-                <span className={`transition-transform duration-300 text-gray-500 ${
-                  activeMethod === 'cc' ? 'rotate-180' : ''
-                }`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </span>
+                <div className="flex-grow">
+                  <h3 className="font-medium text-sm">Kartu Kredit</h3>
+                </div>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className={`text-gray-400 transform transition-transform duration-300 ${activeMethod === 'cc' ? 'rotate-180' : ''}`}
+                />
               </button>
-              
+
               {activeMethod === 'cc' && (
-                <div className="mt-1 rounded-b-lg border border-t-0 border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 animate-fadeIn">
-                  <div className="mb-4">
-                    <label className="block text-gray-700 mb-2">Informasi Kartu</label>
-                    <div className="space-y-3">
-                      <input 
-                        type="text" 
-                        placeholder="Nomor Kartu" 
-                        className="w-full px-4 py-2 border rounded-lg" 
-                        maxLength={19}
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <input 
-                          type="text" 
-                          placeholder="MM/YY" 
-                          className="w-full px-4 py-2 border rounded-lg" 
-                          maxLength={5}
+                <div className="payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out active:max-h-[500px]">
+                  <div className="payment-details-content p-3">
+                    <div className="mb-4">
+                      <label className="block text-gray-700 mb-2">Informasi Kartu</label>
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          placeholder="Nomor Kartu"
+                          className="w-full px-4 py-2 border rounded-lg"
+                          maxLength={19}
                         />
-                        <input 
-                          type="text" 
-                          placeholder="CVV" 
-                          className="w-full px-4 py-2 border rounded-lg" 
-                          maxLength={3}
+                        <div className="grid grid-cols-2 gap-3">
+                          <input
+                            type="text"
+                            placeholder="MM/YY"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            maxLength={5}
+                          />
+                          <input
+                            type="text"
+                            placeholder="CVV"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            maxLength={3}
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Nama di Kartu"
+                          className="w-full px-4 py-2 border rounded-lg"
                         />
                       </div>
-                      <input 
-                        type="text" 
-                        placeholder="Nama di Kartu" 
-                        className="w-full px-4 py-2 border rounded-lg"
-                      />
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center mb-4">
-                    <input type="checkbox" id="saveCard" className="mr-2" />
-                    <label htmlFor="saveCard" className="text-sm text-gray-600">
-                      Simpan kartu untuk pembayaran berikutnya
-                    </label>
-                  </div>
-                  
-                  <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Jumlah Pembayaran</span>
-                      <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
+
+                    <div className="flex items-center mb-4">
+                      <input type="checkbox" id="saveCard" className="mr-2" />
+                      <label htmlFor="saveCard" className="text-sm text-gray-600">
+                        Simpan kartu untuk pembayaran berikutnya
+                      </label>
                     </div>
+
+                    <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Jumlah Pembayaran</span>
+                        <span className="font-bold text-blue-600">{formatRupiah(plan.amount)}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={processPayment}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
+                    >
+                      <FontAwesomeIcon icon={faLock} className="mr-2" /> Bayar Sekarang
+                    </button>
                   </div>
-                  
-                  <button
-                    onClick={processPayment}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
-                  >
-                    <i className="fas fa-lock mr-2"></i> Bayar Sekarang
-                  </button>
                 </div>
               )}
             </div>
@@ -611,8 +570,8 @@ const PaymentModal = ({
 
       {/* Toast Notification */}
       {isCopied && (
-        <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg flex items-center z-50 animate-fadeIn">
-          <i className="fas fa-copy mr-2"></i> Nomor disalin!
+        <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-3 rounded-lg flex items-center z-[1000] animate-fade-in">
+          <FontAwesomeIcon icon={faCopy} className="mr-2" /> Nomor disalin!
         </div>
       )}
     </div>
