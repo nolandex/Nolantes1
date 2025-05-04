@@ -34,8 +34,10 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
   if (!isOpen) return null;
 
   return (
-    <div className="light fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      {/* Main Modal Container - Forced Light Mode */}
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        
         {/* Header */}
         <div className="bg-blue-600 p-4 rounded-t-lg">
           <div className="flex justify-between items-center">
@@ -69,7 +71,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
           {/* QRIS Method */}
           <div className="mb-3">
             <div 
-              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${activeMethod === 'qris' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'}`}
+              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+                activeMethod === 'qris' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'
+              }`}
               onClick={() => setActiveMethod(activeMethod === 'qris' ? null : 'qris')}
             >
               <div className="flex items-center">
@@ -78,7 +82,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                 </div>
                 <span className="text-gray-800">QRIS</span>
               </div>
-              <span className={`transform transition-transform ${activeMethod === 'qris' ? 'rotate-180' : ''}`}>▼</span>
+              <span className={`text-gray-600 transform transition-transform ${
+                activeMethod === 'qris' ? 'rotate-180' : ''
+              }`}>▼</span>
             </div>
             
             {activeMethod === 'qris' && (
@@ -88,7 +94,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                     [QR Code Placeholder]
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm text-center mb-3">Scan QR code menggunakan aplikasi mobile banking atau e-wallet</p>
+                <p className="text-gray-600 text-sm text-center mb-3">
+                  Scan QR code menggunakan aplikasi mobile banking atau e-wallet
+                </p>
                 <button 
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium"
                   onClick={processPayment}
@@ -102,7 +110,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
           {/* Virtual Account Method */}
           <div className="mb-3">
             <div 
-              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${activeMethod === 'va' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'}`}
+              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+                activeMethod === 'va' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'
+              }`}
               onClick={() => setActiveMethod(activeMethod === 'va' ? null : 'va')}
             >
               <div className="flex items-center">
@@ -111,7 +121,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                 </div>
                 <span className="text-gray-800">Virtual Account</span>
               </div>
-              <span className={`transform transition-transform ${activeMethod === 'va' ? 'rotate-180' : ''}`}>▼</span>
+              <span className={`text-gray-600 transform transition-transform ${
+                activeMethod === 'va' ? 'rotate-180' : ''
+              }`}>▼</span>
             </div>
             
             {activeMethod === 'va' && (
@@ -121,7 +133,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                   {['BCA', 'Mandiri', 'BNI'].map(bank => (
                     <button 
                       key={bank}
-                      className={`p-2 border rounded-lg flex flex-col items-center ${selectedBank === bank ? 'bg-blue-100 border-blue-300' : 'bg-white'}`}
+                      className={`p-2 border rounded-lg flex flex-col items-center ${
+                        selectedBank === bank ? 'bg-blue-100 border-blue-300' : 'bg-white'
+                      }`}
                       onClick={() => setSelectedBank(bank)}
                     >
                       <Image 
@@ -166,7 +180,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
           {/* E-Wallet Method */}
           <div className="mb-3">
             <div 
-              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${activeMethod === 'ewallet' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'}`}
+              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+                activeMethod === 'ewallet' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'
+              }`}
               onClick={() => setActiveMethod(activeMethod === 'ewallet' ? null : 'ewallet')}
             >
               <div className="flex items-center">
@@ -175,7 +191,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                 </div>
                 <span className="text-gray-800">E-Wallet</span>
               </div>
-              <span className={`transform transition-transform ${activeMethod === 'ewallet' ? 'rotate-180' : ''}`}>▼</span>
+              <span className={`text-gray-600 transform transition-transform ${
+                activeMethod === 'ewallet' ? 'rotate-180' : ''
+              }`}>▼</span>
             </div>
             
             {activeMethod === 'ewallet' && (
@@ -185,7 +203,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                   {['DANA', 'GoPay', 'OVO'].map(wallet => (
                     <button 
                       key={wallet}
-                      className={`p-2 border rounded-lg flex flex-col items-center ${selectedWallet === wallet ? 'bg-blue-100 border-blue-300' : 'bg-white'}`}
+                      className={`p-2 border rounded-lg flex flex-col items-center ${
+                        selectedWallet === wallet ? 'bg-blue-100 border-blue-300' : 'bg-white'
+                      }`}
                       onClick={() => setSelectedWallet(wallet)}
                     >
                       <Image 
@@ -230,7 +250,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
           {/* Retail Method */}
           <div className="mb-3">
             <div 
-              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${activeMethod === 'retail' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'}`}
+              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+                activeMethod === 'retail' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'
+              }`}
               onClick={() => setActiveMethod(activeMethod === 'retail' ? null : 'retail')}
             >
               <div className="flex items-center">
@@ -239,7 +261,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                 </div>
                 <span className="text-gray-800">Retail</span>
               </div>
-              <span className={`transform transition-transform ${activeMethod === 'retail' ? 'rotate-180' : ''}`}>▼</span>
+              <span className={`text-gray-600 transform transition-transform ${
+                activeMethod === 'retail' ? 'rotate-180' : ''
+              }`}>▼</span>
             </div>
             
             {activeMethod === 'retail' && (
@@ -249,7 +273,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                   {['Alfamart', 'Indomaret'].map(retail => (
                     <button 
                       key={retail}
-                      className={`p-2 border rounded-lg flex flex-col items-center ${selectedRetail === retail ? 'bg-blue-100 border-blue-300' : 'bg-white'}`}
+                      className={`p-2 border rounded-lg flex flex-col items-center ${
+                        selectedRetail === retail ? 'bg-blue-100 border-blue-300' : 'bg-white'
+                      }`}
                       onClick={() => setSelectedRetail(retail)}
                     >
                       <Image 
@@ -294,7 +320,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
           {/* Credit Card Method */}
           <div className="mb-3">
             <div 
-              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${activeMethod === 'cc' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'}`}
+              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+                activeMethod === 'cc' ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'
+              }`}
               onClick={() => setActiveMethod(activeMethod === 'cc' ? null : 'cc')}
             >
               <div className="flex items-center">
@@ -303,7 +331,9 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
                 </div>
                 <span className="text-gray-800">Kartu Kredit</span>
               </div>
-              <span className={`transform transition-transform ${activeMethod === 'cc' ? 'rotate-180' : ''}`}>▼</span>
+              <span className={`text-gray-600 transform transition-transform ${
+                activeMethod === 'cc' ? 'rotate-180' : ''
+              }`}>▼</span>
             </div>
             
             {activeMethod === 'cc' && (
@@ -358,7 +388,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
 
       {/* Processing Modal */}
       {isProcessing && (
-        <div className="light fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="mb-4">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -373,7 +403,7 @@ const PaymentModal = ({ isOpen, onClose, plan }: { isOpen: boolean; onClose: () 
 
       {/* Success Modal */}
       {isSuccess && (
-        <div className="light fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="text-green-500 mb-4 text-5xl">
               ✓
