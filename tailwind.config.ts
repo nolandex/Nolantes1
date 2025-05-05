@@ -21,38 +21,42 @@ const config = {
     },
     extend: {
       colors: {
-        'border': '#B0B0B0', // Light Gray
-        'input': '#1A2526', // Dark Blue-Black
-        'ring': '#007BFF', // Standard Blue
-        'background': '#1A2526', // Dark Blue-Black
-        'foreground': '#FFFFFF', // White
-        'primary': {
-          DEFAULT: '#007BFF', // Standard Blue
-          foreground: '#FFFFFF', // White
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        // primary: {
+        //   DEFAULT: "hsl(var(--primary))",
+        //   foreground: "hsl(var(--primary-foreground))",
+        // },
+        primary: {
+          foreground: "#FFFFFF",
+          DEFAULT: "#3B82F6",
         },
-        'secondary': {
-          DEFAULT: '#1A2526', // Dark Blue-Black
-          foreground: '#FFFFFF', // White
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
-        'destructive': {
-          DEFAULT: '#FF0000', // Red (default destructive color, adjust if needed)
-          foreground: '#FFFFFF', // White
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        'muted': {
-          DEFAULT: '#1A2526', // Dark Blue-Black
-          foreground: '#B0B0B0', // Light Gray
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
-        'accent': {
-          DEFAULT: '#1A2526', // Dark Blue-Black
-          foreground: '#FFFFFF', // White
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        'popover': {
-          DEFAULT: '#1A2526', // Dark Blue-Black
-          foreground: '#FFFFFF', // White
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
-        'card': {
-          DEFAULT: '#1A2526', // Dark Blue-Black
-          foreground: '#FFFFFF', // White
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       borderRadius: {
@@ -87,6 +91,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate"), nextui()],
-} satisfies Config;
+} satisfies Config
 
-export default config;
+export default config
