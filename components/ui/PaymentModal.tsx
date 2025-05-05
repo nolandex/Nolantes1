@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
   faCheckCircle,
@@ -16,7 +16,7 @@ import {
   faLock,
   faArrowRight,
   faExclamationTriangle,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Plan {
   name: string;
@@ -39,29 +39,29 @@ const PaymentModal = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFailed, setIsFailed] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [invoiceNumber, setInvoiceNumber] = useState("");
   const [isCopied, setIsCopied] = useState(false);
-  const [paymentCode, setPaymentCode] = useState('');
-  const [vaNumber, setVaNumber] = useState('');
+  const [paymentCode, setPaymentCode] = useState("");
+  const [vaNumber, setVaNumber] = useState("");
 
   const imagePaths = {
-    qris: '/images/payments/qris.png',
+    qris: "/images/payments/qris.png",
     banks: {
-      bca: '/images/payments/banks/bca.png',
-      mandiri: '/images/payments/banks/mandiri.png',
-      bni: '/images/payments/banks/bni.png',
+      bca: "/images/payments/banks/bca.png",
+      mandiri: "/images/payments/banks/mandiri.png",
+      bni: "/images/payments/banks/bni.png",
     },
     ewallets: {
-      dana: '/images/payments/ewallets/dana.png',
-      gopay: '/images/payments/ewallets/gopay.png',
-      ovo: '/images/payments/ewallets/ovo.png',
+      dana: "/images/payments/ewallets/dana.png",
+      gopay: "/images/payments/ewallets/gopay.png",
+      ovo: "/images/payments/ewallets/ovo.png",
     },
     retails: {
-      alfamart: '/images/payments/retails/alfamart.png',
-      indomaret: '/images/payments/retails/indomaret.png',
+      alfamart: "/images/payments/retails/alfamart.png",
+      indomaret: "/images/payments/retails/indomaret.png",
     },
-    qrCode: '/images/payments/qrcode.png'
+    qrCode: "/images/payments/qrcode.png",
   };
 
   useEffect(() => {
@@ -78,37 +78,37 @@ const PaymentModal = ({
     setIsProcessing(false);
     setIsSuccess(false);
     setIsFailed(false);
-    setErrorMessage('');
-    setInvoiceNumber('');
+    setErrorMessage("");
+    setInvoiceNumber("");
     setIsCopied(false);
-    setPaymentCode('');
-    setVaNumber('');
+    setPaymentCode("");
+    setVaNumber("");
   };
 
   const formatRupiah = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
     }).format(amount);
   };
 
   const generatePaymentCode = (method: string) => {
-    if (method === 'va' && selectedBank) {
-      const prefix = selectedBank === 'BCA' ? '390' : selectedBank === 'Mandiri' ? '700' : '800';
+    if (method === "va" && selectedBank) {
+      const prefix = selectedBank === "BCA" ? "390" : selectedBank === "Mandiri" ? "700" : "800";
       const code = `${prefix}${Math.floor(100000000 + Math.random() * 900000000)}`;
       setVaNumber(code);
       return code;
-    } else if (method === 'ewallet' && selectedWallet) {
+    } else if (method === "ewallet" && selectedWallet) {
       const code = `08${Math.floor(100000000 + Math.random() * 900000000)}`;
       setPaymentCode(code);
       return code;
-    } else if (method === 'retail' && selectedRetail) {
+    } else if (method === "retail" && selectedRetail) {
       const code = `${selectedRetail.slice(0, 4).toUpperCase()}${Math.floor(100000 + Math.random() * 900000)}`;
       setPaymentCode(code);
       return code;
     }
-    return '';
+    return "";
   };
 
   const copyToClipboard = (text: string) => {
@@ -116,7 +116,7 @@ const PaymentModal = ({
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }).catch((err) => {
-      console.error('Gagal menyalin:', err);
+      console.error("Gagal menyalin:", err);
     });
   };
 
@@ -124,9 +124,9 @@ const PaymentModal = ({
     return new Promise((resolve) => {
       setTimeout(() => {
         if (Math.random() > 0.5) {
-          resolve({ status: 'success', invoice: `INV-${Date.now().toString().slice(-8)}` });
+          resolve({ status: "success", invoice: `INV-${Date.now().toString().slice(-8)}` });
         } else {
-          resolve({ status: 'error', message: 'Pembayaran gagal: Saldo tidak cukup atau server bermasalah.' });
+          resolve({ status: "error", message: "Pembayaran gagal: Saldo tidak cukup atau server bermasalah." });
         }
       }, 1000);
     });
@@ -138,29 +138,29 @@ const PaymentModal = ({
       const response: any = await simulatePaymentApi();
       setIsProcessing(false);
 
-      if (response.status === 'success') {
+      if (response.status === "success") {
         setIsSuccess(true);
         setInvoiceNumber(response.invoice);
       } else {
         setIsFailed(true);
-        setErrorMessage(response.message || 'Terjadi kesalahan saat memproses pembayaran.');
+        setErrorMessage(response.message || "Terjadi kesalahan saat memproses pembayaran.");
       }
     } catch (error) {
       setIsProcessing(false);
       setIsFailed(true);
-      setErrorMessage('Gagal menghubungi server. Silakan coba lagi nanti.');
+      setErrorMessage("Gagal menghubungi server. Silakan coba lagi nanti.");
     }
   };
 
   const getMethodName = (method: string | null) => {
     const methods: { [key: string]: string } = {
-      qris: 'QRIS',
-      va: 'Virtual Account',
-      ewallet: 'E-Wallet',
-      retail: 'Retail',
-      cc: 'Kartu Kredit',
+      qris: "QRIS",
+      va: "Virtual Account",
+      ewallet: "E-Wallet",
+      retail: "Retail",
+      cc: "Kartu Kredit",
     };
-    return methods[method || ''] || 'Pembayaran';
+    return methods[method || ""] || "Pembayaran";
   };
 
   if (!isOpen) return null;
@@ -170,12 +170,12 @@ const PaymentModal = ({
       {/* Processing Modal */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+          <div className="payment-modal bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="mb-4">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500 transition-all duration-1000 ease-in-out"
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                 ></div>
               </div>
             </div>
@@ -188,7 +188,7 @@ const PaymentModal = ({
       {/* Success Modal */}
       {isSuccess && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+          <div className="payment-modal bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="text-green-500 mb-4">
               <FontAwesomeIcon icon={faCheckCircle} className="text-5xl" />
             </div>
@@ -221,7 +221,7 @@ const PaymentModal = ({
       {/* Failure Modal */}
       {isFailed && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+          <div className="payment-modal bg-white rounded-xl max-w-md w-full p-6 text-center">
             <div className="text-red-500 mb-4">
               <FontAwesomeIcon icon={faExclamationTriangle} className="text-5xl" />
             </div>
@@ -238,7 +238,7 @@ const PaymentModal = ({
       )}
 
       {/* Main Payment Modal */}
-      <div className="w-full max-w-sm overflow-y-auto rounded-xl bg-white shadow-xl">
+      <div className="payment-modal w-full max-w-sm overflow-y-auto rounded-xl bg-white shadow-xl">
         <div className="bg-blue-600 p-5 rounded-t-xl">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-bold text-white">{plan.name}</h2>
@@ -260,10 +260,10 @@ const PaymentModal = ({
 
           <div className="space-y-2 mb-4">
             {/* QRIS */}
-            <div>
+            <div className="payment-method-container">
               <button
-                onClick={() => setActiveMethod(activeMethod === 'qris' ? null : 'qris')}
-                className="w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+                onClick={() => setActiveMethod(activeMethod === "qris" ? null : "qris")}
+                className="payment-method w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
                 <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
                   <Image
@@ -278,45 +278,55 @@ const PaymentModal = ({
                 <h3 className="font-medium text-sm">QRIS</h3>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${activeMethod === 'qris' ? 'rotate-180' : ''}`}
+                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
+                    activeMethod === "qris" ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
-              {activeMethod === 'qris' && (
-                <div className="p-3">
-                  <div className="text-center mb-3">
-                    <Image
-                      src={imagePaths.qrCode}
-                      alt="QR Code"
-                      width={200}
-                      height={200}
-                      className="mx-auto w-48 h-48 rounded-lg mb-2"
-                      quality={100}
-                    />
-                    <p className="text-xs text-gray-500">Scan QR code menggunakan aplikasi mobile banking atau e-wallet</p>
-                  </div>
+              {activeMethod === "qris" && (
+                <div
+                  className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${
+                    activeMethod === "qris" ? "max-h-[500px]" : ""
+                  }`}
+                >
+                  <div className="payment-details-content p-3">
+                    <div className="text-center mb-3">
+                      <Image
+                        src={imagePaths.qrCode}
+                        alt="QR Code"
+                        width={200}
+                        height={200}
+                        className="mx-auto w-48 h-48 rounded-lg mb-2"
+                        quality={100}
+                      />
+                      <p className="text-xs text-gray-500">
+                        Scan QR code menggunakan aplikasi mobile banking atau e-wallet
+                      </p>
+                    </div>
 
-                  <div className="bg-blue-50 p-2 rounded-lg text-xs text-blue-800 mb-3">
-                    <p>
-                      <FontAwesomeIcon icon={faInfoCircle} className="mr-1" /> QR code akan kadaluarsa dalam 24 jam
-                    </p>
-                  </div>
+                    <div className="bg-blue-50 p-2 rounded-lg text-xs text-blue-800 mb-3">
+                      <p>
+                        <FontAwesomeIcon icon={faInfoCircle} className="mr-1" /> QR code akan kadaluarsa dalam 24 jam
+                      </p>
+                    </div>
 
-                  <button
-                    onClick={processPayment}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
-                  >
-                    <FontAwesomeIcon icon={faCheckCircle} className="mr-1" /> Saya Sudah Bayar
-                  </button>
+                    <button
+                      onClick={processPayment}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
+                    >
+                      <FontAwesomeIcon icon={faCheckCircle} className="mr-1" /> Saya Sudah Bayar
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Virtual Account */}
-            <div>
+            <div className="payment-method-container">
               <button
-                onClick={() => setActiveMethod(activeMethod === 'va' ? null : 'va')}
-                className="w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+                onClick={() => setActiveMethod(activeMethod === "va" ? null : "va")}
+                className="payment-method w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
                 <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
                   <FontAwesomeIcon icon={faUniversity} className="text-blue-600 text-sm" />
@@ -324,84 +334,95 @@ const PaymentModal = ({
                 <h3 className="font-medium text-sm">Virtual Account</h3>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${activeMethod === 'va' ? 'rotate-180' : ''}`}
+                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
+                    activeMethod === "va" ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
-              {activeMethod === 'va' && (
-                <div className="p-3">
-                  <h4 className="font-medium mb-2 text-center text-sm">Pilih Bank</h4>
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {[
-                      { id: 'bca', logo: imagePaths.banks.bca },
-                      { id: 'mandiri', logo: imagePaths.banks.mandiri },
-                      { id: 'bni', logo: imagePaths.banks.bni },
-                    ].map((bank) => (
-                      <button
-                        key={bank.id}
-                        onClick={() => {
-                          setSelectedBank(bank.id.toUpperCase());
-                          generatePaymentCode('va');
-                        }}
-                        className={`p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${selectedBank === bank.id.toUpperCase() ? 'bg-blue-100' : ''}`}
-                      >
-                        <div className="relative w-full h-8">
-                          <Image
-                            src={bank.logo}
-                            alt=""
-                            fill
-                            className="object-contain"
-                            quality={100}
-                          />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+              {activeMethod === "va" && (
+                <div
+                  className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${
+                    activeMethod === "va" ? "max-h-[500px]" : ""
+                  }`}
+                >
+                  <div className="payment-details-content p-3">
+                    <h4 className="font-medium mb-2 text-center text-sm">Pilih Bank</h4>
+                    <div className="grid grid-cols-3 gap-2 mb-3">
+                      {[
+                        { id: "bca", logo: imagePaths.banks.bca },
+                        { id: "mandiri", logo: imagePaths.banks.mandiri },
+                        { id: "bni", logo: imagePaths.banks.bni },
+                      ].map((bank) => (
+                        <button
+                          key={bank.id}
+                          onClick={() => {
+                            setSelectedBank(bank.id.toUpperCase());
+                            generatePaymentCode("va");
+                          }}
+                          className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                            selectedBank === bank.id.toUpperCase() ? "bg-blue-100" : ""
+                          }`}
+                        >
+                          <div className="relative w-full h-8">
+                            <Image
+                              src={bank.logo}
+                              alt=""
+                              fill
+                              className="object-contain"
+                              quality={100}
+                            />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
 
-                  {selectedBank && (
-                    <>
-                      <div className="bg-gray-50 p-3 rounded-lg mb-3">
-                        <div className="mb-2">
-                          <label className="block text-gray-500 text-xs mb-1">Nomor Virtual Account</label>
-                          <div className="flex items-center">
-                            <span className="font-mono bg-gray-100 p-1 rounded flex-1 text-sm">{vaNumber}</span>
-                            <button
-                              onClick={() => copyToClipboard(vaNumber)}
-                              className="text-blue-600 hover:text-blue-800 ml-1"
-                            >
-                              <FontAwesomeIcon icon={faCopy} className="text-sm" />
-                            </button>
+                    {selectedBank && (
+                      <>
+                        <div className="bg-gray-50 p-3 rounded-lg mb-3">
+                          <div className="mb-2">
+                            <label className="block text-gray-500 text-xs mb-1">Nomor Virtual Account</label>
+                            <div className="flex items-center">
+                              <span className="font-mono va-number bg-gray-100 p-1 rounded flex-1 text-sm">{vaNumber}</span>
+                              <button
+                                onClick={() => copyToClipboard(vaNumber)}
+                                className="text-blue-600 hover:text-blue-800 ml-1"
+                              >
+                                <FontAwesomeIcon icon={faCopy} className="text-sm" />
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-gray-500 text-xs mb-1">Jumlah Transfer</label>
+                            <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
                           </div>
                         </div>
-                        <div>
-                          <label className="block text-gray-500 text-xs mb-1">Jumlah Transfer</label>
-                          <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
+
+                        <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
+                          <p>
+                            <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" /> Transfer tepat sesuai nominal
+                            untuk proses otomatis
+                          </p>
                         </div>
-                      </div>
 
-                      <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
-                        <p>
-                          <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" /> Transfer tepat sesuai nominal untuk proses otomatis
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={processPayment}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
-                      >
-                        <FontAwesomeIcon icon={faCheckCircle} className="mr-1" /> Konfirmasi Pembayaran
-                      </button>
-                    </>
-                  )}
+                        <button
+                          onClick={processPayment}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
+                        >
+                          <FontAwesomeIcon icon={faCheckCircle} className="mr-1" /> Konfirmasi Pembayaran
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
 
             {/* E-Wallet */}
-            <div>
+            <div className="payment-method-container">
               <button
-                onClick={() => setActiveMethod(activeMethod === 'ewallet' ? null : 'ewallet')}
-                className="w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+                onClick={() => setActiveMethod(activeMethod === "ewallet" ? null : "ewallet")}
+                className="payment-method w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
                 <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
                   <FontAwesomeIcon icon={faWallet} className="text-green-600 text-sm" />
@@ -409,84 +430,97 @@ const PaymentModal = ({
                 <h3 className="font-medium text-sm">E-Wallet</h3>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${activeMethod === 'ewallet' ? 'rotate-180' : ''}`}
+                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
+                    activeMethod === "ewallet" ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
-              {activeMethod === 'ewallet' && (
-                <div className="p-3">
-                  <h4 className="font-medium mb-2 text-center text-sm">Pilih E-Wallet</h4>
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {[
-                      { id: 'dana', logo: imagePaths.ewallets.dana },
-                      { id: 'gopay', logo: imagePaths.ewallets.gopay },
-                      { id: 'ovo', logo: imagePaths.ewallets.ovo },
-                    ].map((wallet) => (
-                      <button
-                        key={wallet.id}
-                        onClick={() => {
-                          setSelectedWallet(wallet.id.toUpperCase());
-                          generatePaymentCode('ewallet');
-                        }}
-                        className={`p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${selectedWallet === wallet.id.toUpperCase() ? 'bg-blue-100' : ''}`}
-                      >
-                        <div className="relative w-full h-8">
-                          <Image
-                            src={wallet.logo}
-                            alt=""
-                            fill
-                            className="object-contain"
-                            quality={100}
-                          />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+              {activeMethod === "ewallet" && (
+                <div
+                  className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${
+                    activeMethod === "ewallet" ? "max-h-[500px]" : ""
+                  }`}
+                >
+                  <div className="payment-details-content p-3">
+                    <h4 className="font-medium mb-2 text-center text-sm">Pilih E-Wallet</h4>
+                    <div className="grid grid-cols-3 gap-2 mb-3">
+                      {[
+                        { id: "dana", logo: imagePaths.ewallets.dana },
+                        { id: "gopay", logo: imagePaths.ewallets.gopay },
+                        { id: "ovo", logo: imagePaths.ewallets.ovo },
+                      ].map((wallet) => (
+                        <button
+                          key={wallet.id}
+                          onClick={() => {
+                            setSelectedWallet(wallet.id.toUpperCase());
+                            generatePaymentCode("ewallet");
+                          }}
+                          className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                            selectedWallet === wallet.id.toUpperCase() ? "bg-blue-100" : ""
+                          }`}
+                        >
+                          <div className="relative w-full h-8">
+                            <Image
+                              src={wallet.logo}
+                              alt=""
+                              fill
+                              className="object-contain"
+                              quality={100}
+                            />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
 
-                  {selectedWallet && (
-                    <>
-                      <div className="bg-gray-50 p-3 rounded-lg mb-3">
-                        <div className="mb-2">
-                          <label className="block text-gray-500 text-xs mb-1">Nomor E-Wallet</label>
-                          <div className="flex items-center">
-                            <span className="font-mono bg-gray-100 p-1 rounded flex-1 text-sm">{paymentCode}</span>
-                            <button
-                              onClick={() => copyToClipboard(paymentCode)}
-                              className="text-blue-600 hover:text-blue-800 ml-1"
-                            >
-                              <FontAwesomeIcon icon={faCopy} className="text-sm" />
-                            </button>
+                    {selectedWallet && (
+                      <>
+                        <div className="bg-gray-50 p-3 rounded-lg mb-3">
+                          <div className="mb-2">
+                            <label className="block text-gray-500 text-xs mb-1">Nomor E-Wallet</label>
+                            <div className="flex items-center">
+                              <span className="font-mono ewallet-number bg-gray-100 p-1 rounded flex-1 text-sm">
+                                {paymentCode}
+                              </span>
+                              <button
+                                onClick={() => copyToClipboard(paymentCode)}
+                                className="text-blue-600 hover:text-blue-800 ml-1"
+                              >
+                                <FontAwesomeIcon icon={faCopy} className="text-sm" />
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-gray-500 text-xs mb-1">Jumlah Transfer</label>
+                            <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
                           </div>
                         </div>
-                        <div>
-                          <label className="block text-gray-500 text-xs mb-1">Jumlah Transfer</label>
-                          <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
+
+                        <div className="bg-blue-50 p-2 rounded-lg text-xs text-blue-800 mb-3">
+                          <p>
+                            <FontAwesomeIcon icon={faInfoCircle} className="mr-1" /> Anda akan diarahkan ke aplikasi untuk
+                            menyelesaikan pembayaran
+                          </p>
                         </div>
-                      </div>
 
-                      <div className="bg-blue-50 p-2 rounded-lg text-xs text-blue-800 mb-3">
-                        <p>
-                          <FontAwesomeIcon icon={faInfoCircle} className="mr-1" /> Anda akan diarahkan ke aplikasi untuk menyelesaikan pembayaran
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={processPayment}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
-                      >
-                        <FontAwesomeIcon icon={faArrowRight} className="mr-1" /> Lanjut ke Pembayaran
-                      </button>
-                    </>
-                  )}
+                        <button
+                          onClick={processPayment}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
+                        >
+                          <FontAwesomeIcon icon={faArrowRight} className="mr-1" /> Lanjut ke Pembayaran
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Retail */}
-            <div>
+            <div className="payment-method-container">
               <button
-                onClick={() => setActiveMethod(activeMethod === 'retail' ? null : 'retail')}
-                className="w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+                onClick={() => setActiveMethod(activeMethod === "retail" ? null : "retail")}
+                className="payment-method w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
                 <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
                   <FontAwesomeIcon icon={faStore} className="text-orange-600 text-sm" />
@@ -494,83 +528,94 @@ const PaymentModal = ({
                 <h3 className="font-medium text-sm">Retail</h3>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${activeMethod === 'retail' ? 'rotate-180' : ''}`}
+                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
+                    activeMethod === "retail" ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
-              {activeMethod === 'retail' && (
-                <div className="p-3">
-                  <h4 className="font-medium mb-2 text-center text-sm">Pilih Retail</h4>
-                  <div className="grid grid-cols-2 gap-2 mb-3">
-                    {[
-                      { id: 'alfamart', logo: imagePaths.retails.alfamart },
-                      { id: 'indomaret', logo: imagePaths.retails.indomaret },
-                    ].map((retail) => (
-                      <button
-                        key={retail.id}
-                        onClick={() => {
-                          setSelectedRetail(retail.id.toUpperCase());
-                          generatePaymentCode('retail');
-                        }}
-                        className={`p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${selectedRetail === retail.id.toUpperCase() ? 'bg-blue-100' : ''}`}
-                      >
-                        <div className="relative w-full h-8">
-                          <Image
-                            src={retail.logo}
-                            alt=""
-                            fill
-                            className="object-contain"
-                            quality={100}
-                          />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+              {activeMethod === "retail" && (
+                <div
+                  className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${
+                    activeMethod === "retail" ? "max-h-[500px]" : ""
+                  }`}
+                >
+                  <div className="payment-details-content p-3">
+                    <h4 className="font-medium mb-2 text-center text-sm">Pilih Retail</h4>
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      {[
+                        { id: "alfamart", logo: imagePaths.retails.alfamart },
+                        { id: "indomaret", logo: imagePaths.retails.indomaret },
+                      ].map((retail) => (
+                        <button
+                          key={retail.id}
+                          onClick={() => {
+                            setSelectedRetail(retail.id.toUpperCase());
+                            generatePaymentCode("retail");
+                          }}
+                          className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                            selectedRetail === retail.id.toUpperCase() ? "bg-blue-100" : ""
+                          }`}
+                        >
+                          <div className="relative w-full h-8">
+                            <Image
+                              src={retail.logo}
+                              alt=""
+                              fill
+                              className="object-contain"
+                              quality={100}
+                            />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
 
-                  {selectedRetail && (
-                    <>
-                      <div className="bg-gray-50 p-3 rounded-lg mb-3">
-                        <div className="mb-2">
-                          <label className="block text-gray-500 text-xs mb-1">Kode Pembayaran</label>
-                          <div className="flex items-center">
-                            <span className="font-mono bg-gray-100 p-1 rounded flex-1 text-sm">{paymentCode}</span>
-                            <button
-                              onClick={() => copyToClipboard(paymentCode)}
-                              className="text-blue-600 hover:text-blue-800 ml-1"
-                            >
-                              <FontAwesomeIcon icon={faCopy} className="text-sm" />
-                            </button>
+                    {selectedRetail && (
+                      <>
+                        <div className="bg-gray-50 p-3 rounded-lg mb-3">
+                          <div className="mb-2">
+                            <label className="block text-gray-500 text-xs mb-1">Kode Pembayaran</label>
+                            <div className="flex items-center">
+                              <span className="font-mono retail-code bg-gray-100 p-1 rounded flex-1 text-sm">{paymentCode}</span>
+                              <button
+                                onClick={() => copyToClipboard(paymentCode)}
+                                className="text-blue-600 hover:text-blue-800 ml-1"
+                              >
+                                <FontAwesomeIcon icon={faCopy} className="text-sm" />
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-gray-500 text-xs mb-1">Jumlah Pembayaran</label>
+                            <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
                           </div>
                         </div>
-                        <div>
-                          <label className="block text-gray-500 text-xs mb-1">Jumlah Pembayaran</label>
-                          <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
+
+                        <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
+                          <p>
+                            <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" /> Kode pembayaran akan kadaluarsa
+                            dalam 24 jam
+                          </p>
                         </div>
-                      </div>
 
-                      <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
-                        <p>
-                          <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" /> Kode pembayaran akan kadaluarsa dalam 24 jam
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={processPayment}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
-                      >
-                        <FontAwesomeIcon icon={faCheckCircle} className="mr-1" /> Konfirmasi
-                      </button>
-                    </>
-                  )}
+                        <button
+                          onClick={processPayment}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
+                        >
+                          <FontAwesomeIcon icon={faCheckCircle} className="mr-1" /> Konfirmasi
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Credit Card */}
-            <div>
+            <div className="payment-method-container">
               <button
-                onClick={() => setActiveMethod(activeMethod === 'cc' ? null : 'cc')}
-                className="w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+                onClick={() => setActiveMethod(activeMethod === "cc" ? null : "cc")}
+                className="payment-method w-full bg-white rounded-lg p-2 flex items-center cursor-pointer shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200"
               >
                 <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
                   <FontAwesomeIcon icon={faCreditCard} className="text-purple-600 text-sm" />
@@ -578,77 +623,85 @@ const PaymentModal = ({
                 <h3 className="font-medium text-sm">Kartu Kredit</h3>
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${activeMethod === 'cc' ? 'rotate-180' : ''}`}
+                  className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
+                    activeMethod === "cc" ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
-              {activeMethod === 'cc' && (
-                <div className="p-3">
-                  <div className="mb-3">
-                    <label className="block mb-1 text-sm">Informasi Kartu</label>
-                    <div className="space-y-2">
-                      <input
-                        type="text"
-                        placeholder="Nomor Kartu"
-                        className="w-full px-3 py-1 border rounded-lg text-sm"
-                        maxLength={19}
-                      />
-                      <div className="grid grid-cols-2 gap-2">
+              {activeMethod === "cc" && (
+                <div
+                  className={`payment-details max-h-0 overflow-hidden transition-all duration-300 ease-out ${
+                    activeMethod === "cc" ? "max-h-[500px]" : ""
+                  }`}
+                >
+                  <div className="payment-details-content p-3">
+                    <div className="mb-3">
+                      <label className="block mb-1 text-sm">Informasi Kartu</label>
+                      <div className="space-y-2">
                         <input
                           type="text"
-                          placeholder="MM/YY"
+                          placeholder="Nomor Kartu"
                           className="w-full px-3 py-1 border rounded-lg text-sm"
-                          maxLength={5}
+                          maxLength={19}
                         />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="MM/YY"
+                            className="w-full px-3 py-1 border rounded-lg text-sm"
+                            maxLength={5}
+                          />
+                          <input
+                            type="text"
+                            placeholder="CVV"
+                            className="w-full px-3 py-1 border rounded-lg text-sm"
+                            maxLength={3}
+                          />
+                        </div>
                         <input
                           type="text"
-                          placeholder="CVV"
+                          placeholder="Nama di Kartu"
                           className="w-full px-3 py-1 border rounded-lg text-sm"
-                          maxLength={3}
                         />
                       </div>
-                      <input
-                        type="text"
-                        placeholder="Nama di Kartu"
-                        className="w-full px-3 py-1 border rounded-lg text-sm"
-                      />
                     </div>
-                  </div>
 
-                  <div className="flex items-center mb-3">
-                    <input type="checkbox" id="saveCard" className="mr-1" />
-                    <label htmlFor="saveCard" className="text-xs text-gray-600">
-                      Simpan kartu untuk pembayaran berikutnya
-                    </label>
-                  </div>
-
-                  <div className="bg-gray-50 p-3 rounded-lg mb-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500 text-xs">Jumlah Pembayaran</span>
-                      <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
+                    <div className="flex items-center mb-3">
+                      <input type="checkbox" id="saveCard" className="mr-1" />
+                      <label htmlFor="saveCard" className="text-xs text-gray-600">
+                        Simpan kartu untuk pembayaran berikutnya
+                      </label>
                     </div>
-                  </div>
 
-                  <button
-                    onClick={processPayment}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
-                  >
-                    <FontAwesomeIcon icon={faLock} className="mr-1" /> Bayar Sekarang
-                  </button>
+                    <div className="bg-gray-50 p-3 rounded-lg mb-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500 text-xs">Jumlah Pembayaran</span>
+                        <span className="font-bold text-blue-600 text-sm">{formatRupiah(plan.amount)}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={processPayment}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
+                    >
+                      <FontAwesomeIcon icon={faLock} className="mr-1" /> Bayar Sekarang
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Toast Notification */}
-      {isCopied && (
-        <div className="fixed bottom-5 right-5 bg-green-500 text-white px-3 py-2 rounded-lg flex items-center z-[1000] animate-fade-in text-sm">
-          <FontAwesomeIcon icon={faCopy} className="mr-1" /> Nomor disalin!
-        </div>
-      )}
-    </div>
+        {/* Toast Notification */}
+        {isCopied && (
+          <div className="fixed bottom-5 right-5 bg-green-500 text-white px-3 py-2 rounded-lg flex items-center z-[1000] animate-fade-in text-sm">
+            <FontAwesomeIcon icon={faCopy} className="mr-1" /> Nomor disalin!
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
