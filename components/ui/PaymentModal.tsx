@@ -386,7 +386,7 @@ const PaymentModal = ({
                       quality={100}
                     />
                   </div>
-                  <h3 className="font-medium text-sm">QRIS</h3>
+                  <h3 className="font-medium text-sm mt-1">QRIS</h3>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
@@ -449,7 +449,7 @@ const PaymentModal = ({
                       className="text-blue-600 text-sm"
                     />
                   </div>
-                  <h3 className="font-medium text-sm">Virtual Account</h3>
+                  <h3 className="font-medium text-sm mt-1">Virtual Account</h3>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
@@ -568,7 +568,7 @@ const PaymentModal = ({
                       className="text-green-600 text-sm"
                     />
                   </div>
-                  <h3 className="font-medium text-sm">E-Wallet</h3>
+                  <h3 className="font-medium text-sm mt-1">E-Wallet</h3>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
@@ -599,9 +599,9 @@ const PaymentModal = ({
                               setSelectedWallet(wallet.id.toUpperCase());
                               generatePaymentCode("ewallet");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-200 active:scale-95 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-300 ${
                               selectedWallet === wallet.id.toUpperCase()
-                                ? "bg-blue-100"
+                                ? "bg-blue-50 border-blue-600 shadow-[0_0_0_1px_#0066cc]"
                                 : ""
                             }`}
                           >
@@ -688,7 +688,7 @@ const PaymentModal = ({
                       className="text-orange-600 text-sm"
                     />
                   </div>
-                  <h3 className="font-medium text-sm">Retail</h3>
+                  <h3 className="font-medium text-sm mt-1">Retail</h3>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
@@ -718,9 +718,9 @@ const PaymentModal = ({
                               setSelectedRetail(retail.id.toUpperCase());
                               generatePaymentCode("retail");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-200 active:scale-95 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-300 ${
                               selectedRetail === retail.id.toUpperCase()
-                                ? "bg-blue-100"
+                                ? "bg-blue-50 border-blue-600 shadow-[0_0_0_1px_#0066cc]"
                                 : ""
                             }`}
                           >
@@ -806,7 +806,7 @@ const PaymentModal = ({
                       className="text-purple-600 text-sm"
                     />
                   </div>
-                  <h3 className="font-medium text-sm">Kartu Kredit</h3>
+                  <h3 className="font-medium text-sm mt-1">Kartu Kredit</h3>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
