@@ -37,6 +37,14 @@ export default function DynamicCalculator() {
     setIsModalOpen(false);
   };
 
+  const paymentData = {
+    platform,
+    layanan,
+    jumlah,
+    linkTarget,
+    total: price,
+  };
+
   return (
     <div className="mt-20 px-4">
       <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#1A2526] text-[#FFFFFF]">
@@ -121,11 +129,7 @@ export default function DynamicCalculator() {
       <PaymentModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        platform={platform}
-        layanan={layanan}
-        jumlah={jumlah}
-        linkTarget={linkTarget}
-        total={price}
+        paymentData={paymentData}
       />
     </div>
   );
