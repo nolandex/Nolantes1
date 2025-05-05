@@ -34,14 +34,14 @@ export default function DynamicCalculator() {
   return (
     <section id="Calculator" className="mt-24 px-6">
       <div className="max-w-2xl mx-auto p-8 rounded-2xl bg-[#1C2526] text-white shadow-2xl backdrop-blur">
-        <h2 className="text-3xl font-bold text-center mb-6">Dynamic Price Calculator</h2>
+        <h2 className="text-3xl font-bold text-center mb-6 text-white">Dynamic Price Calculator</h2>
 
         <div className="space-y-6">
           {/* Platform */}
           <div>
-            <label className="block mb-2 font-medium">Platform</label>
+            <label className="block mb-2 font-medium text-white">Platform</label>
             <select
-              className="w-full p-3 rounded-lg bg-[#2A3435] text-white"
+              className="w-full p-3 rounded-lg bg-[#1A1A1A] text-white"
               value={platform}
               onChange={(e) => {
                 setPlatform(e.target.value);
@@ -59,9 +59,9 @@ export default function DynamicCalculator() {
 
           {/* Product */}
           <div>
-            <label className="block mb-2 font-medium">Product</label>
+            <label className="block mb-2 font-medium text-white">Product</label>
             <select
-              className="w-full p-3 rounded-lg bg-[#2A3435] text-white"
+              className="w-full p-3 rounded-lg bg-[#1A1A1A] text-white"
               value={product}
               onChange={(e) => setProduct(e.target.value)}
               disabled={!platform}
@@ -78,9 +78,9 @@ export default function DynamicCalculator() {
 
           {/* Quantity */}
           <div>
-            <label className="block mb-2 font-medium">Quantity</label>
+            <label className="block mb-2 font-medium text-white">Quantity</label>
             <select
-              className="w-full p-3 rounded-lg bg-[#2A3435] text-white"
+              className="w-full p-3 rounded-lg bg-[#1A1A1A] text-white"
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value))}
             >
@@ -94,17 +94,17 @@ export default function DynamicCalculator() {
 
           {/* Target */}
           <div>
-            <label className="block mb-2 font-medium">Your Link or Username</label>
+            <label className="block mb-2 font-medium text-white">Your Link or Username</label>
             <input
               type="text"
-              className="w-full p-3 rounded-lg bg-[#2A3435] text-white placeholder:text-gray-400"
+              className="w-full p-3 rounded-lg bg-[#1A1A1A] text-white placeholder:text-gray-400"
               placeholder="e.g. @yourusername or profile link"
             />
           </div>
 
           {/* Total Price */}
-          <div className="text-center text-lg font-semibold">
-            Total: <span className="text-[#00A3E0]">Rp{price.toLocaleString("id-ID")}</span>
+          <div className="text-center text-lg font-semibold text-[#00A3E0]">
+            Total: Rp{price.toLocaleString("id-ID")}
           </div>
 
           {/* Pay Now */}
