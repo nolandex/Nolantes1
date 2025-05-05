@@ -1,4 +1,3 @@
-// /components/home/Pricing.tsx
 "use client";
 
 import { useState } from "react";
@@ -55,6 +54,23 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
     setIsPaymentModalOpen(false);
     setSelectedPlan(null);
   };
+
+  // Petakan data selectedPlan ke format paymentData
+  const paymentData = selectedPlan
+    ? {
+        platform: "N/A", // Pricing tidak memiliki konteks platform
+        layanan: selectedPlan.product, // Gunakan product sebagai layanan
+        jumlah: "1", // Default jumlah 1, karena tidak ada input jumlah
+        linkTarget: "", // Default kosong, karena tidak ada input link target
+        total: selectedPlan.amount, // Total diambil dari amount
+      }
+    : {
+        platform: "",
+        layanan: "",
+        jumlah: "",
+        linkTarget: "",
+        total: 0,
+      };
 
   return (
     <section
@@ -187,11 +203,11 @@ const Pricing = ({ id, locale, langName }: PricingProps) => {
       <Spacer y={10} />
 
       {/* Payment Modal */}
-      {selectedPlan && (
+      {isPaymentModalOpen && (
         <PaymentModal
           isOpen={isPaymentModalOpen}
           onClose={closePaymentModal}
-          plan={selectedPlan}
+          paymentData={paymentData}
         />
       )}
     </section>
