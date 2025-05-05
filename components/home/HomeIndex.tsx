@@ -26,6 +26,9 @@ export default async function HomeIndex({ lang }: { lang: string }) {
       {/* Pricing */}
       <Pricing id="Pricing" locale={dict.Pricing} langName={langName} />
 
+      {/* Dynamic Calculator Section */}
+      <DynamicCalculatorWrapper />
+
       {/* Testimonials */}
       <Testimonials id="Testimonials" locale={dict.Testimonials} />
 
@@ -34,9 +37,6 @@ export default async function HomeIndex({ lang }: { lang: string }) {
 
       {/* CTA */}
       <CTA locale={dict.CTA} CTALocale={dict.CTAButton} />
-
-      {/* Dynamic Calculator Section */}
-      <DynamicCalculatorWrapper />
     </>
   );
 }
