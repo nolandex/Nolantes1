@@ -37,15 +37,15 @@ export default function DynamicCalculator() {
 
   return (
     <div className="mt-20 px-4">
-      <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#1A2526] text-[#FFFFFF]">
-        <h2 className="text-2xl font-bold text-center mb-6 text-[#FFFFFF]">
+      <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#FFFFFF] text-[#1A1A1A]">
+        <h2 className="text-2xl font-bold text-center mb-6 text-[#1A1A1A]">
           Dynamic Price Calculator
         </h2>
         <div className="space-y-4">
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Platform</label>
+            <label className="block mb-1 font-semibold text-[#1A1A1A]">Platform</label>
             <select
-              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF]"
+              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A]"
               value={platform}
               onChange={(e) => {
                 setPlatform(e.target.value);
@@ -62,9 +62,9 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Product</label>
+            <label className="block mb-1 font-semibold text-[#1A1A1A]">Product</label>
             <select
-              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF]"
+              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A]"
               value={product}
               onChange={(e) => setProduct(e.target.value)}
               disabled={!platform}
@@ -80,9 +80,9 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Quantity</label>
+            <label className="block mb-1 font-semibold text-[#1A1A1A]">Quantity</label>
             <select
-              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF]"
+              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A]"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
             >
@@ -95,23 +95,23 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Your Link or Username</label>
+            <label className="block mb-1 font-semibold text-[#1A1A1A]">Your Link or Username</label>
             <input
               type="text"
               placeholder="e.g. @yourusername or link"
-              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF] placeholder:text-[#B0B0B0]"
+              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A] placeholder:text-[#6B7280]"
               value={link}
               onChange={(e) => setLink(e.target.value)}
             />
           </div>
 
-          <div className="text-center font-bold text-lg text-[#00A3FF]">
+          <div className="text-center font-bold text-lg text-[#567AF5]">
             Total: Rp{price.toLocaleString("id-ID")}
           </div>
 
           <button
             onClick={handlePayment}
-            className="w-full p-3 rounded font-bold text-[#FFFFFF] bg-[#007BFF] hover:bg-[#00A3FF] transition"
+            className="w-full p-3 rounded font-bold text-white bg-[#567AF5] hover:bg-[#00593E] transition"
           >
             Pay Now via WhatsApp
           </button>
