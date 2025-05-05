@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
+  faChevronDown,
   faCheckCircle,
   faCopy,
   faInfoCircle,
@@ -350,7 +351,7 @@ const PaymentModal = ({
         <div className="payment-modal w-full max-w-sm overflow-y-auto rounded-xl bg-white shadow-xl">
           <div className="bg-blue-600 p-5 rounded-t-xl">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-white">Pembayaran</h2>
+              <h2 className="text-lg font-bold text-white text-center flex-1">CHECKOUT</h2>
               <button onClick={onClose} className="text-white hover:text-blue-200">
                 <FontAwesomeIcon icon={faTimes} />
               </button>
@@ -358,47 +359,14 @@ const PaymentModal = ({
           </div>
 
           <div className="p-5">
-            <div className="flex justify-between items-center mb-5 p-3 bg-gray-50 rounded-lg">
+            <div className="text-center mb-5 p-3 bg-gray-50 rounded-lg">
               <h3 className="font-medium text-sm">Total Pembayaran</h3>
               <p className="text-blue-600 font-bold text-lg">
                 {formatRupiah(paymentData.total)}
               </p>
             </div>
 
-            {activeMethod && (
-              <div className="bg-gray-50 p-4 rounded-lg mb-5 text-left">
-                <h4 className="font-medium text-sm mb-2">Rincian Pemesanan</h4>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Platform</span>
-                    <span className="font-medium">{paymentData.platform}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Layanan</span>
-                    <span className="font-medium">{paymentData.layanan}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Jumlah</span>
-                    <span className="font-medium">{paymentData.jumlah}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Link Target</span>
-                    <span className="font-medium">{paymentData.linkTarget}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeMethod && (
-              <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-5">
-                <p>
-                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />{" "}
-                  Transfer tepat sesuai nominal untuk proses otomatis
-                </p>
-              </div>
-            )}
-
-            <h3 className="text-xs font-medium mb-3 text-gray-600">METODE PEMBAYARAN</h3>
+            <h3 className="text-xs font-medium mb-3 text-gray-600 text-center">METODE PEMBAYARAN</h3>
 
             <div className="space-y-2 mb-4">
               <div className="payment-method-container">
@@ -420,7 +388,7 @@ const PaymentModal = ({
                   </div>
                   <h3 className="font-medium text-sm">QRIS</h3>
                   <FontAwesomeIcon
-                    icon={faCheckCircle}
+                    icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
                       activeMethod === "qris" ? "rotate-180" : ""
                     }`}
@@ -483,7 +451,7 @@ const PaymentModal = ({
                   </div>
                   <h3 className="font-medium text-sm">Virtual Account</h3>
                   <FontAwesomeIcon
-                    icon={faCheckCircle}
+                    icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
                       activeMethod === "va" ? "rotate-180" : ""
                     }`}
@@ -560,6 +528,16 @@ const PaymentModal = ({
                             </div>
                           </div>
 
+                          <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
+                            <p>
+                              <FontAwesomeIcon
+                                icon={faExclamationCircle}
+                                className="mr-1"
+                              />{" "}
+                              Transfer tepat sesuai nominal untuk proses otomatis
+                            </p>
+                          </div>
+
                           <button
                             onClick={processPayment}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
@@ -592,7 +570,7 @@ const PaymentModal = ({
                   </div>
                   <h3 className="font-medium text-sm">E-Wallet</h3>
                   <FontAwesomeIcon
-                    icon={faCheckCircle}
+                    icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
                       activeMethod === "ewallet" ? "rotate-180" : ""
                     }`}
@@ -621,9 +599,9 @@ const PaymentModal = ({
                               setSelectedWallet(wallet.id.toUpperCase());
                               generatePaymentCode("ewallet");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-300 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-200 active:scale-95 ${
                               selectedWallet === wallet.id.toUpperCase()
-                                ? "bg-blue-50 border-blue-600 shadow-[0_0_0_1px_#0066cc]"
+                                ? "bg-blue-100"
                                 : ""
                             }`}
                           >
@@ -669,6 +647,17 @@ const PaymentModal = ({
                             </div>
                           </div>
 
+                          <div className="bg-blue-50 p-2 rounded-lg text-xs text-blue-800 mb-3">
+                            <p>
+                              <FontAwesomeIcon
+                                icon={faInfoCircle}
+                                className="mr-1"
+                              />{" "}
+                              Anda akan diarahkan ke aplikasi untuk menyelesaikan
+                              pembayaran
+                            </p>
+                          </div>
+
                           <button
                             onClick={processPayment}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
@@ -701,7 +690,7 @@ const PaymentModal = ({
                   </div>
                   <h3 className="font-medium text-sm">Retail</h3>
                   <FontAwesomeIcon
-                    icon={faCheckCircle}
+                    icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
                       activeMethod === "retail" ? "rotate-180" : ""
                     }`}
@@ -729,9 +718,9 @@ const PaymentModal = ({
                               setSelectedRetail(retail.id.toUpperCase());
                               generatePaymentCode("retail");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-300 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-200 active:scale-95 ${
                               selectedRetail === retail.id.toUpperCase()
-                                ? "bg-blue-50 border-blue-600 shadow-[0_0_0_1px_#0066cc]"
+                                ? "bg-blue-100"
                                 : ""
                             }`}
                           >
@@ -777,6 +766,16 @@ const PaymentModal = ({
                             </div>
                           </div>
 
+                          <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
+                            <p>
+                              <FontAwesomeIcon
+                                icon={faExclamationCircle}
+                                className="mr-1"
+                              />{" "}
+                              Kode pembayaran akan kadaluarsa dalam 24 jam
+                            </p>
+                          </div>
+
                           <button
                             onClick={processPayment}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
@@ -809,7 +808,7 @@ const PaymentModal = ({
                   </div>
                   <h3 className="font-medium text-sm">Kartu Kredit</h3>
                   <FontAwesomeIcon
-                    icon={faCheckCircle}
+                    icon={faChevronDown}
                     className={`text-gray-400 ml-auto transform transition-transform duration-300 ${
                       activeMethod === "cc" ? "rotate-180" : ""
                     }`}
