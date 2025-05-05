@@ -13,44 +13,17 @@ export default function DynamicCalculator() {
   const [error, setError] = useState("");
 
   const platformData: Record<string, Record<string, number>> = {
-    instagram: {
-      followers: 15000,
-      likes: 3000,
-      views: 2000,
-    },
-    tiktok: {
-      followers: 17000,
-      likes: 3000,
-      views: 500,
-      shares: 3000,
-      saves: 3000,
-    },
-    telegram: {
-      members: 15000,
-      reactions: 3000,
-      views: 3000,
-    },
-    youtube: {
-      subscribers: 25000,
-      views: 13000,
-      likes: 5000,
-    },
-    facebook: {
-      followers: 12000,
-      likes: 10000,
-      views: 1000,
-    },
+    instagram: { followers: 15000, likes: 3000, views: 2000 },
+    tiktok: { followers: 17000, likes: 3000, views: 500, shares: 3000, saves: 3000 },
+    telegram: { members: 15000, reactions: 3000, views: 3000 },
+    youtube: { subscribers: 25000, views: 13000, likes: 5000 },
+    facebook: { followers: 12000, likes: 10000, views: 1000 },
   };
 
   const layananNames: Record<string, string> = {
-    followers: "Followers",
-    likes: "Likes",
-    views: "Views",
-    members: "Members",
-    reactions: "Reactions",
-    subscribers: "Subscribers",
-    shares: "Shares",
-    saves: "Saves",
+    followers: "Followers", likes: "Likes", views: "Views",
+    members: "Members", reactions: "Reactions", subscribers: "Subscribers",
+    shares: "Shares", saves: "Saves",
   };
 
   useEffect(() => {
@@ -72,29 +45,19 @@ export default function DynamicCalculator() {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleCloseModal = () => setIsModalOpen(false);
 
-  const paymentData = {
-    platform,
-    layanan,
-    jumlah,
-    linkTarget,
-    total: price,
-  };
+  const paymentData = { platform, layanan, jumlah, linkTarget, total: price };
 
   return (
-    <div className="mt-20 px-4">
-      <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#1E293B] text-[#FFFFFF]">
-        <h2 className="text-2xl font-bold text-center mb-6 text-[#FFFFFF]">
-          Dynamic Price Calculator
-        </h2>
+    <section className="flex flex-col justify-center items-center pt-12">
+      <div className="w-[85%] max-w-lg bg-gradient-to-br from-gray-900 to-gray-800 rounded-[8px] p-6 shadow-xl text-white">
+        <h2 className="text-2xl font-bold text-center mb-6">Dynamic Price Calculator</h2>
         <div className="space-y-4">
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Kategori</label>
+            <label className="block mb-1 font-semibold">Kategori</label>
             <select
-              className="w-full p-3 rounded bg-[#1E293B] text-[#FFFFFF] border border-[#3B82F6]"
+              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
               value={platform}
               onChange={(e) => {
                 setPlatform(e.target.value);
@@ -111,9 +74,9 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Layanan</label>
+            <label className="block mb-1 font-semibold">Layanan</label>
             <select
-              className="w-full p-3 rounded bg-[#1E293B] text-[#FFFFFF] border border-[#3B82F6]"
+              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
               value={layanan}
               onChange={(e) => setLayanan(e.target.value)}
               disabled={!platform}
@@ -129,9 +92,9 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Jumlah</label>
+            <label className="block mb-1 font-semibold">Jumlah</label>
             <select
-              className="w-full p-3 rounded bg-[#1E293B] text-[#FFFFFF] border border-[#3B82F6]"
+              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
               value={jumlah}
               onChange={(e) => setJumlah(e.target.value)}
             >
@@ -144,10 +107,10 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#FFFFFF]">Link Target</label>
+            <label className="block mb-1 font-semibold">Link Target</label>
             <input
               type="text"
-              className="w-full p-3 rounded bg-[#1E293B] text-[#FFFFFF] border border-[#3B82F6]"
+              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
               value={linkTarget}
               onChange={(e) => setLinkTarget(e.target.value)}
               required
@@ -156,24 +119,25 @@ export default function DynamicCalculator() {
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
 
-          <div className="text-center font-bold text-lg text-[#3B82F6]">
+          <div className="text-center font-bold text-lg text-blue-400">
             Harga: Rp{price.toLocaleString("id-ID")}
           </div>
 
           <button
             onClick={handlePayment}
-            className="w-full p-3 rounded font-bold text-[#FFFFFF] bg-[#1E3A8A] hover:bg-[#3B82F6] transition"
+            className="w-full p-3 rounded font-bold bg-blue-700 hover:bg-blue-600 transition"
             disabled={!price || !linkTarget.trim()}
           >
             Bayar Sekarang
           </button>
         </div>
       </div>
+
       <PaymentModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         paymentData={paymentData}
       />
-    </div>
+    </section>
   );
 }
