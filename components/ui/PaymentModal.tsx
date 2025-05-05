@@ -248,6 +248,9 @@ const PaymentModal = ({
         .payment-modal .border-gray-300 {
           border-color: #d1d5db !important;
         }
+        .payment-modal .border-blue-600 {
+          border-color: #0066cc !important;
+        }
         .payment-modal .text-green-500 {
           color: #22c55e !important;
         }
@@ -361,6 +364,39 @@ const PaymentModal = ({
                 {formatRupiah(paymentData.total)}
               </p>
             </div>
+
+            {activeMethod && (
+              <div className="bg-gray-50 p-4 rounded-lg mb-5 text-left">
+                <h4 className="font-medium text-sm mb-2">Rincian Pemesanan</h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Platform</span>
+                    <span className="font-medium">{paymentData.platform}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Layanan</span>
+                    <span className="font-medium">{paymentData.layanan}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Jumlah</span>
+                    <span className="font-medium">{paymentData.jumlah}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Link Target</span>
+                    <span className="font-medium">{paymentData.linkTarget}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeMethod && (
+              <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-5">
+                <p>
+                  <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />{" "}
+                  Transfer tepat sesuai nominal untuk proses otomatis
+                </p>
+              </div>
+            )}
 
             <h3 className="text-xs font-medium mb-3 text-gray-600">METODE PEMBAYARAN</h3>
 
@@ -476,9 +512,9 @@ const PaymentModal = ({
                               setSelectedBank(bank.id.toUpperCase());
                               generatePaymentCode("va");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 border border-gray-300 transition-all duration-200 active:scale-95 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-300 ${
                               selectedBank === bank.id.toUpperCase()
-                                ? "bg-blue-100"
+                                ? "bg-blue-50 border-blue-600 shadow-[0_0_0_1px_#0066cc]"
                                 : ""
                             }`}
                           >
@@ -522,16 +558,6 @@ const PaymentModal = ({
                                 {formatRupiah(paymentData.total)}
                               </span>
                             </div>
-                          </div>
-
-                          <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
-                            <p>
-                              <FontAwesomeIcon
-                                icon={faExclamationCircle}
-                                className="mr-1"
-                              />{" "}
-                              Transfer tepat sesuai nominal untuk proses otomatis
-                            </p>
                           </div>
 
                           <button
@@ -595,9 +621,9 @@ const PaymentModal = ({
                               setSelectedWallet(wallet.id.toUpperCase());
                               generatePaymentCode("ewallet");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 border border-gray-300 transition-all duration-200 active:scale-95 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-300 ${
                               selectedWallet === wallet.id.toUpperCase()
-                                ? "bg-blue-100"
+                                ? "bg-blue-50 border-blue-600 shadow-[0_0_0_1px_#0066cc]"
                                 : ""
                             }`}
                           >
@@ -641,17 +667,6 @@ const PaymentModal = ({
                                 {formatRupiah(paymentData.total)}
                               </span>
                             </div>
-                          </div>
-
-                          <div className="bg-blue-50 p-2 rounded-lg text-xs text-blue-800 mb-3">
-                            <p>
-                              <FontAwesomeIcon
-                                icon={faInfoCircle}
-                                className="mr-1"
-                              />{" "}
-                              Anda akan diarahkan ke aplikasi untuk menyelesaikan
-                              pembayaran
-                            </p>
                           </div>
 
                           <button
@@ -714,9 +729,9 @@ const PaymentModal = ({
                               setSelectedRetail(retail.id.toUpperCase());
                               generatePaymentCode("retail");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 border border-gray-300 transition-all duration-200 active:scale-95 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:border-gray-500 border border-gray-300 transition-all duration-300 ${
                               selectedRetail === retail.id.toUpperCase()
-                                ? "bg-blue-100"
+                                ? "bg-blue-50 border-blue-600 shadow-[0_0_0_1px_#0066cc]"
                                 : ""
                             }`}
                           >
@@ -760,16 +775,6 @@ const PaymentModal = ({
                                 {formatRupiah(paymentData.total)}
                               </span>
                             </div>
-                          </div>
-
-                          <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
-                            <p>
-                              <FontAwesomeIcon
-                                icon={faExclamationCircle}
-                                className="mr-1"
-                              />{" "}
-                              Kode pembayaran akan kadaluarsa dalam 24 jam
-                            </p>
                           </div>
 
                           <button
