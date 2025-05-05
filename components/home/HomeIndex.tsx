@@ -6,7 +6,7 @@ import Pricing from "@/components/home/Pricing";
 import ScrollingLogos from "@/components/home/ScrollingLogos";
 import SocialProof from "@/components/home/SocialProof";
 import Testimonials from "@/components/home/Testimonials";
-import DynamicCalculator from "@/components/home/DynamicCalculator"; // Tambahkan ini
+import DynamicCalculatorWrapper from "@/components/home/DynamicCalculatorWrapper"; // wrapper untuk komponen client
 import { defaultLocale, getDictionary } from "@/lib/i18n";
 
 export default async function HomeIndex({ lang }: { lang: string }) {
@@ -36,7 +36,7 @@ export default async function HomeIndex({ lang }: { lang: string }) {
       <CTA locale={dict.CTA} CTALocale={dict.CTAButton} />
 
       {/* Dynamic Calculator Section */}
-      <DynamicCalculator />
+      <DynamicCalculatorWrapper />
     </>
   );
 }
