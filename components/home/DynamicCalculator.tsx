@@ -1,138 +1,122 @@
-import React, { useState, useEffect } from 'react';
+"use client";
 
-type PlatformType = 'instagram' | 'tiktok' | 'youtube';
+import { useEffect, useState } from "react";
 
-interface ProductOption {
-  label: string;
-  pricePer1000: number;
-}
-
-const productOptions: Record<PlatformType, ProductOption[]> = {
-  instagram: [
-    { label: 'Followers', pricePer1000: 25000 },
-    { label: 'Likes', pricePer1000: 15000 }
-  ],
-  tiktok: [
-    { label: 'Followers', pricePer1000: 20000 },
-    { label: 'Views', pricePer1000: 10000 }
-  ],
-  youtube: [
-    { label: 'Subscribers', pricePer1000: 30000 },
-    { label: 'Views', pricePer1000: 12000 }
-  ]
-};
-
-const PriceCalculator = () => {
-  const [platform, setPlatform] = useState<PlatformType | ''>('');
-  const [product, setProduct] = useState('');
-  const [quantity, setQuantity] = useState('1000');
-  const [link, setLink] = useState('');
-  const [products, setProducts] = useState<ProductOption[]>([]);
+export default function DynamicCalculator() {
+  const [platform, setPlatform] = useState("");
+  const [product, setProduct] = useState("");
+  const [quantity, setQuantity] = useState("1K");
   const [price, setPrice] = useState(0);
+  const [link, setLink] = useState("");
 
-  const platformOptions = [
-    { label: 'Instagram', value: 'instagram' },
-    { label: 'TikTok', value: 'tiktok' },
-    { label: 'YouTube', value: 'youtube' }
-  ];
-
-  useEffect(() => {
-    if (platform) {
-      setProducts(productOptions[platform]);
-      setProduct('');
-    }
-  }, [platform]);
+  const platformData: Record<string, Record<string, number>> = {
+    instagram: { followers: 15000, likes: 3000, views: 2000 },
+    tiktok: { followers: 17000, likes: 3000, views: 500, shares: 3000, saves: 3000 },
+    telegram: { members: 15000, reactions: 3000, views: 3000 },
+    youtube: { subscribers: 25000, views: 13000, likes: 5000 },
+    facebook: { followers: 12000, likes: 10000, views: 1000 },
+  };
 
   useEffect(() => {
-    if (platform && product) {
-      const selectedProduct = products.find(p => p.label === product);
-      const unitPrice = selectedProduct?.pricePer1000 || 0;
-      const qty = parseInt(quantity.replace('K', '000'));
-      setPrice(unitPrice * (qty / 1000));
+    if (platform && product && quantity) {
+      const quantityNumber = parseInt(quantity.replace("K", ""));
+      const pricePerK = platformData[platform]?.[product] || 0;
+      setPrice(pricePerK * quantityNumber);
+    } else {
+      setPrice(0);
     }
-  }, [product, quantity, platform, products]);
+  }, [platform, product, quantity]);
 
-  const handleOrder = () => {
-    const message = `Hello, I want to order:
-Platform: ${platform}
-Product: ${product}
-Quantity: ${quantity}
-Username/Link: ${link}
-Total: Rp${price.toLocaleString('id-ID')}`;
-    const url = `https://wa.me/6285156779923?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+  const handlePayment = () => {
+    const text = `Halo! Saya ingin order:\nPlatform: ${platform}\nProduk: ${product}\nJumlah: ${quantity}\nLink: ${link}\nTotal: Rp${price.toLocaleString(
+      "id-ID"
+    )}`;
+    const waLink = `https://wa.me/6285156779923?text=${encodeURIComponent(text)}`;
+    window.open(waLink, "_blank");
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 text-black max-w-md w-full mx-auto space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800">Dynamic Price Calculator</h2>
+    <div className="mt-20 px-4">
+      <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#1A2526] text-[#FFFFFF]">
+        <h2 className="text-2xl font-bold text-center mb-6 text-[#FFFFFF]">
+          Dynamic Price Calculator
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Platform</label>
+            <select
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF]"
+              value={platform}
+              onChange={(e) => {
+                setPlatform(e.target.value);
+                setProduct("");
+              }}
+            >
+              <option value="">Select platform</option>
+              {Object.keys(platformData).map((key) => (
+                <option key={key} value={key}>
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div>
-        <label className="block font-medium text-sm">Platform</label>
-        <select
-          value={platform}
-          onChange={e => setPlatform(e.target.value as PlatformType)}
-          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
-        >
-          <option value="">Select platform</option>
-          {platformOptions.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
+          <div>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Product</label>
+            <select
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF]"
+              value={product}
+              onChange={(e) => setProduct(e.target.value)}
+              disabled={!platform}
+            >
+              <option value="">Select product</option>
+              {platform &&
+                Object.keys(platformData[platform]).map((key) => (
+                  <option key={key} value={key}>
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Quantity</label>
+            <select
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF]"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+            >
+              {Array.from({ length: 10 }, (_, i) => `${i + 1}K`).map((q) => (
+                <option key={q} value={q}>
+                  {q}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Your Link or Username</label>
+            <input
+              type="text"
+              placeholder="e.g. @yourusername or link"
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF] placeholder:text-[#B0B0B0]"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+            />
+          </div>
+
+          <div className="text-center font-bold text-lg text-[#00A3FF]">
+            Total: Rp{price.toLocaleString("id-ID")}
+          </div>
+
+          <button
+            onClick={handlePayment}
+            className="w-full p-3 rounded font-bold text-[#FFFFFF] bg-[#007BFF] hover:bg-[#00A3FF] transition"
+          >
+            Pay Now via WhatsApp
+          </button>
+        </div>
       </div>
-
-      <div>
-        <label className="block font-medium text-sm">Product</label>
-        <select
-          value={product}
-          onChange={e => setProduct(e.target.value)}
-          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
-          disabled={!platform}
-        >
-          <option value="">Select product</option>
-          {products.map(p => (
-            <option key={p.label} value={p.label}>{p.label}</option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="block font-medium text-sm">Quantity</label>
-        <select
-          value={quantity}
-          onChange={e => setQuantity(e.target.value)}
-          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
-        >
-          <option value="1000">1K</option>
-          <option value="2000">2K</option>
-          <option value="5000">5K</option>
-          <option value="10000">10K</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block font-medium text-sm">Your Link or Username</label>
-        <input
-          value={link}
-          onChange={e => setLink(e.target.value)}
-          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
-          placeholder="e.g. @yourusername or link"
-        />
-      </div>
-
-      <div className="text-base font-semibold mt-2">
-        Total: <span className="text-blue-600">Rp{price.toLocaleString('id-ID')}</span>
-      </div>
-
-      <button
-        onClick={handleOrder}
-        disabled={!platform || !product || !quantity || !link}
-        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md font-semibold transition"
-      >
-        Pay Now via WhatsApp
-      </button>
     </div>
   );
-};
-
-export default PriceCalculator;
+}
