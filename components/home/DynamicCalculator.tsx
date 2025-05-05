@@ -25,79 +25,102 @@ export default function DynamicCalculator() {
     }
   }, [platform, product, quantity]);
 
-  return (
-    <div className="mt-20 p-6 rounded-2xl backdrop-blur-xl bg-[#1C252699] shadow-xl text-white max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold text-center mb-4">Dynamic Price Calculator</h2>
-      <div className="space-y-4">
-        <div>
-          <label>Platform</label>
-          <select
-            className="w-full p-3 rounded bg-[#1C2526] text-white"
-            value={platform}
-            onChange={(e) => {
-              setPlatform(e.target.value);
-              setProduct("");
-            }}
-          >
-            <option value="">Select platform</option>
-            {Object.keys(platformData).map((key) => (
-              <option key={key} value={key}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
+  const handleOrder = () => {
+    const total = price.toLocaleString("id-ID");
+    const waLink = `https://wa.me/6285156779923?text=Halo%20saya%20ingin%20order%20${quantity}K%20${product}%20di%20${platform}%20dengan%20total%20Rp${total}`;
+    window.open(waLink, "_blank");
+  };
 
-        <div>
-          <label>Product</label>
-          <select
-            className="w-full p-3 rounded bg-[#1C2526] text-white"
-            value={product}
-            onChange={(e) => setProduct(e.target.value)}
-            disabled={!platform}
-          >
-            <option value="">Select product</option>
-            {platform &&
-              Object.keys(platformData[platform]).map((key) => (
+  return (
+    <section id="Calculator" className="mt-24 px-6">
+      <div className="max-w-2xl mx-auto p-8 rounded-2xl bg-[#1C2526] text-white shadow-2xl backdrop-blur">
+        <h2 className="text-3xl font-bold text-center mb-6">Dynamic Price Calculator</h2>
+
+        <div className="space-y-6">
+          {/* Platform */}
+          <div>
+            <label className="block mb-2 font-medium">Platform</label>
+            <select
+              className="w-full p-3 rounded-lg bg-[#2A3435] text-white"
+              value={platform}
+              onChange={(e) => {
+                setPlatform(e.target.value);
+                setProduct("");
+              }}
+            >
+              <option value="">Select platform</option>
+              {Object.keys(platformData).map((key) => (
                 <option key={key} value={key}>
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </option>
               ))}
-          </select>
-        </div>
+            </select>
+          </div>
 
-        <div>
-          <label>Quantity (1K–10K)</label>
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value))}
-            className="w-full"
-          />
-          <div className="text-center">{quantity}K</div>
-        </div>
+          {/* Product */}
+          <div>
+            <label className="block mb-2 font-medium">Product</label>
+            <select
+              className="w-full p-3 rounded-lg bg-[#2A3435] text-white"
+              value={product}
+              onChange={(e) => setProduct(e.target.value)}
+              disabled={!platform}
+            >
+              <option value="">Select product</option>
+              {platform &&
+                Object.keys(platformData[platform]).map((key) => (
+                  <option key={key} value={key}>
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </option>
+                ))}
+            </select>
+          </div>
 
-        <div>
-          <input
-            type="text"
-            placeholder="Enter your target link or username"
-            className="w-full p-3 rounded bg-[#1C2526] text-white placeholder:text-gray-400"
-          />
-        </div>
+          {/* Quantity */}
+          <div>
+            <label className="block mb-2 font-medium">Quantity</label>
+            <select
+              className="w-full p-3 rounded-lg bg-[#2A3435] text-white"
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value))}
+            >
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((val) => (
+                <option key={val} value={val}>
+                  {val}K
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="text-center font-semibold text-lg">
-          Price: Rp{price.toLocaleString("id-ID")}
-        </div>
+          {/* Target */}
+          <div>
+            <label className="block mb-2 font-medium">Your Link or Username</label>
+            <input
+              type="text"
+              className="w-full p-3 rounded-lg bg-[#2A3435] text-white placeholder:text-gray-400"
+              placeholder="e.g. @yourusername or profile link"
+            />
+          </div>
 
-        <button
-          onClick={() => alert("Payment modal would open here.")}
-          className="w-full p-3 rounded font-bold text-white bg-[#1E90FF] hover:bg-[#00A3E0] transition"
-        >
-          Pay Now
-        </button>
+          {/* Total Price */}
+          <div className="text-center text-lg font-semibold">
+            Total: <span className="text-[#00A3E0]">Rp{price.toLocaleString("id-ID")}</span>
+          </div>
+
+          {/* Pay Now */}
+          <button
+            onClick={handleOrder}
+            disabled={!platform || !product}
+            className={`w-full p-3 rounded-lg font-bold text-white transition ${
+              platform && product
+                ? "bg-[#1E90FF] hover:bg-[#00A3E0]"
+                : "bg-gray-600 cursor-not-allowed"
+            }`}
+          >
+            Pay Now via WhatsApp
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
