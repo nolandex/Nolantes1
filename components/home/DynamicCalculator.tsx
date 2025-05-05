@@ -50,14 +50,14 @@ export default function DynamicCalculator() {
   const paymentData = { platform, layanan, jumlah, linkTarget, total: price };
 
   return (
-    <section className="flex flex-col justify-center items-center pt-12">
-      <div className="w-[85%] max-w-lg bg-gradient-to-br from-gray-900 to-gray-800 rounded-[8px] p-6 shadow-xl text-white">
-        <h2 className="text-2xl font-bold text-center mb-6">Dynamic Price Calculator</h2>
-        <div className="space-y-4">
+    <div className="w-full flex justify-center items-center pt-16 pb-24 px-4">
+      <div className="w-full max-w-5xl bg-[#1E293B] rounded-2xl p-8 shadow-lg backdrop-blur-md border border-white/10">
+        <h2 className="text-3xl font-bold text-white text-center mb-8">Dynamic Price Calculator</h2>
+        <div className="grid md:grid-cols-2 gap-6 text-white">
           <div>
-            <label className="block mb-1 font-semibold">Kategori</label>
+            <label className="block mb-2 font-semibold">Kategori</label>
             <select
-              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
+              className="w-full p-3 rounded bg-[#1E293B] border border-[#3B82F6]"
               value={platform}
               onChange={(e) => {
                 setPlatform(e.target.value);
@@ -74,9 +74,9 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold">Layanan</label>
+            <label className="block mb-2 font-semibold">Layanan</label>
             <select
-              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
+              className="w-full p-3 rounded bg-[#1E293B] border border-[#3B82F6]"
               value={layanan}
               onChange={(e) => setLayanan(e.target.value)}
               disabled={!platform}
@@ -92,9 +92,9 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold">Jumlah</label>
+            <label className="block mb-2 font-semibold">Jumlah</label>
             <select
-              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
+              className="w-full p-3 rounded bg-[#1E293B] border border-[#3B82F6]"
               value={jumlah}
               onChange={(e) => setJumlah(e.target.value)}
             >
@@ -107,10 +107,10 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold">Link Target</label>
+            <label className="block mb-2 font-semibold">Link Target</label>
             <input
               type="text"
-              className="w-full p-3 rounded bg-gray-800 border border-blue-500"
+              className="w-full p-3 rounded bg-[#1E293B] border border-[#3B82F6]"
               value={linkTarget}
               onChange={(e) => setLinkTarget(e.target.value)}
               required
@@ -119,17 +119,19 @@ export default function DynamicCalculator() {
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
 
-          <div className="text-center font-bold text-lg text-blue-400">
+          <div className="col-span-2 text-center font-bold text-xl text-blue-400 mt-4">
             Harga: Rp{price.toLocaleString("id-ID")}
           </div>
 
-          <button
-            onClick={handlePayment}
-            className="w-full p-3 rounded font-bold bg-blue-700 hover:bg-blue-600 transition"
-            disabled={!price || !linkTarget.trim()}
-          >
-            Bayar Sekarang
-          </button>
+          <div className="col-span-2">
+            <button
+              onClick={handlePayment}
+              className="w-full p-3 rounded-xl font-bold text-white bg-[#1E3A8A] hover:bg-[#3B82F6] transition"
+              disabled={!price || !linkTarget.trim()}
+            >
+              Bayar Sekarang
+            </button>
+          </div>
         </div>
       </div>
 
@@ -138,6 +140,6 @@ export default function DynamicCalculator() {
         onClose={handleCloseModal}
         paymentData={paymentData}
       />
-    </section>
+    </div>
   );
 }
