@@ -1,159 +1,131 @@
-"use client";
+import React, { useState, useEffect } from 'react';
 
-import { useEffect, useState } from "react";
-
-export default function DynamicCalculator() {
-  const [platform, setPlatform] = useState("");
-  const [product, setProduct] = useState("");
-  const [quantity, setQuantity] = useState("1K");
+const PriceCalculator = () => {
+  const [platform, setPlatform] = useState('');
+  const [product, setProduct] = useState('');
+  const [quantity, setQuantity] = useState('1000');
+  const [link, setLink] = useState('');
+  const [products, setProducts] = useState<any[]>([]);
   const [price, setPrice] = useState(0);
-  const [link, setLink] = useState("");
 
-  const platformData: Record<string, Record<string, number>> = {
-    instagram: { followers: 15000, likes: 3000, views: 2000 },
-    tiktok: { followers: 17000, likes: 3000, views: 500, shares: 3000, saves: 3000 },
-    telegram: { members: 15000, reactions: 3000, views: 3000 },
-    youtube: { subscribers: 25000, views: 13000, likes: 5000 },
-    facebook: { followers: 12000, likes: 10000, views: 1000 },
+  const platformOptions = [
+    { label: 'Instagram', value: 'instagram' },
+    { label: 'TikTok', value: 'tiktok' },
+    { label: 'YouTube', value: 'youtube' }
+  ];
+
+  const productOptions = {
+    instagram: [
+      { label: 'Followers', pricePer1000: 25000 },
+      { label: 'Likes', pricePer1000: 15000 }
+    ],
+    tiktok: [
+      { label: 'Followers', pricePer1000: 20000 },
+      { label: 'Views', pricePer1000: 10000 }
+    ],
+    youtube: [
+      { label: 'Subscribers', pricePer1000: 30000 },
+      { label: 'Views', pricePer1000: 12000 }
+    ]
   };
 
   useEffect(() => {
-    if (platform && product && quantity) {
-      const quantityNumber = parseInt(quantity.replace("K", ""));
-      const pricePerK = platformData[platform]?.[product] || 0;
-      setPrice(pricePerK * quantityNumber);
-    } else {
-      setPrice(0);
+    if (platform) {
+      setProducts(productOptions[platform]);
+      setProduct('');
     }
-  }, [platform, product, quantity]);
+  }, [platform]);
 
-  const handlePayment = () => {
-    const text = `Halo! Saya ingin order:\nPlatform: ${platform}\nProduk: ${product}\nJumlah: ${quantity}\nLink: ${link}\nTotal: Rp${price.toLocaleString(
-      "id-ID"
-    )}`;
-    const waLink = `https://wa.me/6285156779923?text=${encodeURIComponent(text)}`;
-    window.open(waLink, "_blank");
-  };
+  useEffect(() => {
+    if (platform && product) {
+      const selectedProduct = products.find(p => p.label === product);
+      const unitPrice = selectedProduct?.pricePer1000 || 0;
+      const qty = parseInt(quantity.replace('K', '000'));
+      setPrice(unitPrice * (qty / 1000));
+    }
+  }, [product, quantity]);
 
-  const containerStyle = {
-    backgroundColor: "#1C2526",
-    color: "#ffffff",
-    borderRadius: "1rem",
-    padding: "1.5rem",
-    maxWidth: "500px",
-    margin: "4rem auto",
-    boxShadow: "0 0 20px rgba(0,0,0,0.4)",
-  };
-
-  const inputStyle = {
-    backgroundColor: "#1A1A1A",
-    color: "#ffffff",
-    padding: "0.75rem",
-    borderRadius: "0.5rem",
-    width: "100%",
-    border: "none",
-    marginBottom: "1rem",
-  };
-
-  const labelStyle = {
-    fontWeight: 600,
-    marginBottom: "0.25rem",
-    display: "block",
-  };
-
-  const totalStyle = {
-    textAlign: "center" as const,
-    fontWeight: "bold",
-    fontSize: "1.125rem",
-    color: "#00A3E0",
-    marginBottom: "1rem",
-  };
-
-  const buttonStyle = {
-    backgroundColor: "#1E90FF",
-    color: "#ffffff",
-    fontWeight: "bold",
-    padding: "0.75rem",
-    borderRadius: "0.5rem",
-    width: "100%",
-    border: "none",
-    cursor: "pointer",
+  const handleOrder = () => {
+    const message = `Hello, I want to order:
+Platform: ${platform}
+Product: ${product}
+Quantity: ${quantity}
+Username/Link: ${link}
+Total: Rp${price.toLocaleString('id-ID')}`;
+    const url = `https://wa.me/6285156779923?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
   return (
-    <div style={containerStyle}>
-      <h2 style={{ textAlign: "center", fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
-        Dynamic Price Calculator
-      </h2>
+    <div className="bg-white rounded-2xl shadow-lg p-6 text-black max-w-md w-full mx-auto space-y-4">
+      <h2 className="text-xl font-semibold text-gray-800">Dynamic Price Calculator</h2>
 
       <div>
-        <label style={labelStyle}>Platform</label>
+        <label className="block font-medium text-sm">Platform</label>
         <select
-          style={inputStyle}
           value={platform}
-          onChange={(e) => {
-            setPlatform(e.target.value);
-            setProduct("");
-          }}
+          onChange={e => setPlatform(e.target.value)}
+          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
         >
           <option value="">Select platform</option>
-          {Object.keys(platformData).map((key) => (
-            <option key={key} value={key}>
-              {key.charAt(0).toUpperCase() + key.slice(1)}
-            </option>
+          {platformOptions.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
       </div>
 
       <div>
-        <label style={labelStyle}>Product</label>
+        <label className="block font-medium text-sm">Product</label>
         <select
-          style={inputStyle}
           value={product}
-          onChange={(e) => setProduct(e.target.value)}
+          onChange={e => setProduct(e.target.value)}
+          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
           disabled={!platform}
         >
           <option value="">Select product</option>
-          {platform &&
-            Object.keys(platformData[platform]).map((key) => (
-              <option key={key} value={key}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      <div>
-        <label style={labelStyle}>Quantity</label>
-        <select
-          style={inputStyle}
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-        >
-          {Array.from({ length: 10 }, (_, i) => `${i + 1}K`).map((q) => (
-            <option key={q} value={q}>
-              {q}
-            </option>
+          {products.map(p => (
+            <option key={p.label} value={p.label}>{p.label}</option>
           ))}
         </select>
       </div>
 
       <div>
-        <label style={labelStyle}>Your Link or Username</label>
+        <label className="block font-medium text-sm">Quantity</label>
+        <select
+          value={quantity}
+          onChange={e => setQuantity(e.target.value)}
+          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
+        >
+          <option value="1000">1K</option>
+          <option value="2000">2K</option>
+          <option value="5000">5K</option>
+          <option value="10000">10K</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block font-medium text-sm">Your Link or Username</label>
         <input
-          type="text"
-          style={inputStyle}
-          placeholder="e.g. @yourusername or link"
           value={link}
-          onChange={(e) => setLink(e.target.value)}
+          onChange={e => setLink(e.target.value)}
+          className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
+          placeholder="e.g. @yourusername or link"
         />
       </div>
 
-      <div style={totalStyle}>Total: Rp{price.toLocaleString("id-ID")}</div>
+      <div className="text-base font-semibold mt-2">
+        Total: <span className="text-blue-600">Rp{price.toLocaleString('id-ID')}</span>
+      </div>
 
-      <button style={buttonStyle} onClick={handlePayment}>
+      <button
+        onClick={handleOrder}
+        disabled={!platform || !product || !quantity || !link}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md font-semibold transition"
+      >
         Pay Now via WhatsApp
       </button>
     </div>
   );
-}
+};
+
+export default PriceCalculator;
