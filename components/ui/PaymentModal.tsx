@@ -476,13 +476,13 @@ const PaymentModal = ({
                               setSelectedBank(bank.id.toUpperCase());
                               generatePaymentCode("va");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 border border-gray-300 transition-all duration-200 active:scale-95 ${
                               selectedBank === bank.id.toUpperCase()
                                 ? "bg-blue-100"
                                 : ""
                             }`}
                           >
-                            <div className="relative w-full h-8">
+                            <div className="relative w-full h-12">
                               <Image
                                 src={bank.logo}
                                 alt=""
@@ -595,13 +595,13 @@ const PaymentModal = ({
                               setSelectedWallet(wallet.id.toUpperCase());
                               generatePaymentCode("ewallet");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 border border-gray-300 transition-all duration-200 active:scale-95 ${
                               selectedWallet === wallet.id.toUpperCase()
                                 ? "bg-blue-100"
                                 : ""
                             }`}
                           >
-                            <div className="relative w-full h-8">
+                            <div className="relative w-full h-12">
                               <Image
                                 src={wallet.logo}
                                 alt=""
@@ -714,13 +714,13 @@ const PaymentModal = ({
                               setSelectedRetail(retail.id.toUpperCase());
                               generatePaymentCode("retail");
                             }}
-                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                            className={`method-item p-2 rounded-lg cursor-pointer hover:bg-gray-100 border border-gray-300 transition-all duration-200 active:scale-95 ${
                               selectedRetail === retail.id.toUpperCase()
                                 ? "bg-blue-100"
                                 : ""
                             }`}
                           >
-                            <div className="relative w-full h-8">
+                            <div className="relative w-full h-12">
                               <Image
                                 src={retail.logo}
                                 alt=""
