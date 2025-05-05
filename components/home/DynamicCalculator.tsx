@@ -14,43 +14,43 @@ export default function DynamicCalculator() {
 
   const platformData: Record<string, Record<string, number>> = {
     instagram: {
-      followers: 25.578,
-      likes: 3.5,
-      views: 2,
+      followers: 15000,
+      likes: 3000,
+      views: 2000,
     },
     tiktok: {
-      followers: 17,
-      likes: 3,
-      views: 0.5,
-      shares: 3,
-      saves: 3,
+      followers: 17000,
+      likes: 3000,
+      views: 500,
+      shares: 3000,
+      saves: 3000,
     },
     telegram: {
-      members: 15,
-      reactions: 3,
-      views: 3,
+      members: 15000,
+      reactions: 3000,
+      views: 3000,
     },
     youtube: {
-      subscribers: 25,
-      views: 13,
-      likes: 5,
+      subscribers: 25000,
+      views: 13000,
+      likes: 5000,
     },
     facebook: {
-      followers: 12,
-      likes: 10,
-      views: 1,
+      followers: 12000,
+      likes: 10000,
+      views: 1000,
     },
   };
 
-  const layananDetails: Record<string, string> = {
-    followers: "Followers (Rp25.578/K) - New Update | Refill 30 Days | Max 1M | Old Accounts With Posts | Low Drop | Flag Off | FAST",
-    likes: "Likes (Rp3.5/K) - New Update | Refill 30 Days | Max 1M | Low Drop | Flag Off | FAST",
-    views: "Views (Rp2/K) - New Update | Refill 30 Days | Max 1M | Low Drop | Flag Off | FAST",
-    members: "Members (Rp15/K) - Telegram Members",
-    reactions: "Reactions (Rp3/K) - Telegram Reactions",
-    subscribers: "Subscribers (Rp25/K) - YouTube Subscribers",
-    shares: "Shares (Rp3/K) - TikTok Shares",
-    saves: "Saves (Rp3/K) - TikTok Saves",
+  const layananNames: Record<string, string> = {
+    followers: "Followers",
+    likes: "Likes",
+    views: "Views",
+    members: "Members",
+    reactions: "Reactions",
+    subscribers: "Subscribers",
+    shares: "Shares",
+    saves: "Saves",
   };
 
   useEffect(() => {
@@ -122,7 +122,7 @@ export default function DynamicCalculator() {
               {platform &&
                 Object.keys(platformData[platform]).map((key) => (
                   <option key={key} value={key}>
-                    {layananDetails[key] || `${key.charAt(0).toUpperCase() + key.slice(1)} (Rp${platformData[platform][key]}/K)`}
+                    {layananNames[key]} - Rp{platformData[platform][key].toLocaleString("id-ID")}/1000
                   </option>
                 ))}
             </select>
