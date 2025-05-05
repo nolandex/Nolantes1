@@ -1,11 +1,33 @@
 import React, { useState, useEffect } from 'react';
 
+type PlatformType = 'instagram' | 'tiktok' | 'youtube';
+
+interface ProductOption {
+  label: string;
+  pricePer1000: number;
+}
+
+const productOptions: Record<PlatformType, ProductOption[]> = {
+  instagram: [
+    { label: 'Followers', pricePer1000: 25000 },
+    { label: 'Likes', pricePer1000: 15000 }
+  ],
+  tiktok: [
+    { label: 'Followers', pricePer1000: 20000 },
+    { label: 'Views', pricePer1000: 10000 }
+  ],
+  youtube: [
+    { label: 'Subscribers', pricePer1000: 30000 },
+    { label: 'Views', pricePer1000: 12000 }
+  ]
+};
+
 const PriceCalculator = () => {
-  const [platform, setPlatform] = useState('');
+  const [platform, setPlatform] = useState<PlatformType | ''>('');
   const [product, setProduct] = useState('');
   const [quantity, setQuantity] = useState('1000');
   const [link, setLink] = useState('');
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<ProductOption[]>([]);
   const [price, setPrice] = useState(0);
 
   const platformOptions = [
@@ -13,21 +35,6 @@ const PriceCalculator = () => {
     { label: 'TikTok', value: 'tiktok' },
     { label: 'YouTube', value: 'youtube' }
   ];
-
-  const productOptions = {
-    instagram: [
-      { label: 'Followers', pricePer1000: 25000 },
-      { label: 'Likes', pricePer1000: 15000 }
-    ],
-    tiktok: [
-      { label: 'Followers', pricePer1000: 20000 },
-      { label: 'Views', pricePer1000: 10000 }
-    ],
-    youtube: [
-      { label: 'Subscribers', pricePer1000: 30000 },
-      { label: 'Views', pricePer1000: 12000 }
-    ]
-  };
 
   useEffect(() => {
     if (platform) {
@@ -43,7 +50,7 @@ const PriceCalculator = () => {
       const qty = parseInt(quantity.replace('K', '000'));
       setPrice(unitPrice * (qty / 1000));
     }
-  }, [product, quantity]);
+  }, [product, quantity, platform, products]);
 
   const handleOrder = () => {
     const message = `Hello, I want to order:
@@ -64,7 +71,7 @@ Total: Rp${price.toLocaleString('id-ID')}`;
         <label className="block font-medium text-sm">Platform</label>
         <select
           value={platform}
-          onChange={e => setPlatform(e.target.value)}
+          onChange={e => setPlatform(e.target.value as PlatformType)}
           className="w-full mt-1 p-2 border rounded-md bg-gray-100 text-black"
         >
           <option value="">Select platform</option>
