@@ -1,63 +1,75 @@
 import React, { useState, useEffect } from 'react';
 
-type PlatformType = 'instagram' | 'tiktok' | 'youtube';
+type PlatformType = 'instagram' | 'tiktok' | 'youtube' | 'telegram' | 'facebook';
 
 interface ProductOption {
   label: string;
+  value: string;
   pricePer1000: number;
 }
 
-const productOptions: Record<PlatformType, ProductOption[]> = {
+const platformData: Record<PlatformType, ProductOption[]> = {
   instagram: [
-    { label: 'Followers', pricePer1000: 25000 },
-    { label: 'Likes', pricePer1000: 15000 }
+    { label: 'Followers', value: 'followers', pricePer1000: 15000 },
+    { label: 'Likes', value: 'likes', pricePer1000: 3000 },
+    { label: 'Views', value: 'views', pricePer1000: 2000 }
   ],
   tiktok: [
-    { label: 'Followers', pricePer1000: 20000 },
-    { label: 'Views', pricePer1000: 10000 }
+    { label: 'Followers', value: 'followers', pricePer1000: 17000 },
+    { label: 'Likes', value: 'likes', pricePer1000: 3000 },
+    { label: 'Views', value: 'views', pricePer1000: 500 },
+    { label: 'Shares', value: 'shares', pricePer1000: 3000 },
+    { label: 'Saves', value: 'saves', pricePer1000: 3000 }
+  ],
+  telegram: [
+    { label: 'Members', value: 'members', pricePer1000: 15000 },
+    { label: 'Reactions', value: 'reactions', pricePer1000: 3000 },
+    { label: 'Views', value: 'views', pricePer1000: 3000 }
   ],
   youtube: [
-    { label: 'Subscribers', pricePer1000: 30000 },
-    { label: 'Views', pricePer1000: 12000 }
+    { label: 'Subscribers', value: 'subscribers', pricePer1000: 25000 },
+    { label: 'Views', value: 'views', pricePer1000: 13000 },
+    { label: 'Likes', value: 'likes', pricePer1000: 5000 }
+  ],
+  facebook: [
+    { label: 'Followers', value: 'followers', pricePer1000: 12000 },
+    { label: 'Likes', value: 'likes', pricePer1000: 10000 },
+    { label: 'Views', value: 'views', pricePer1000: 1000 }
   ]
 };
 
+const quantityOptions = Array.from({ length: 10 }, (_, i) => `${i + 1}K`);
+
 const PriceCalculator = () => {
   const [platform, setPlatform] = useState<PlatformType | ''>('');
-  const [product, setProduct] = useState('');
-  const [quantity, setQuantity] = useState('1000');
-  const [link, setLink] = useState('');
+  const [jenis, setJenis] = useState('');
+  const [jumlah, setJumlah] = useState('1K');
+  const [linkTarget, setLinkTarget] = useState('');
   const [products, setProducts] = useState<ProductOption[]>([]);
   const [price, setPrice] = useState(0);
 
-  const platformOptions = [
-    { label: 'Instagram', value: 'instagram' },
-    { label: 'TikTok', value: 'tiktok' },
-    { label: 'YouTube', value: 'youtube' }
-  ];
-
   useEffect(() => {
     if (platform) {
-      setProducts(productOptions[platform]);
-      setProduct('');
+      setProducts(platformData[platform]);
+      setJenis('');
     }
   }, [platform]);
 
   useEffect(() => {
-    if (platform && product) {
-      const selectedProduct = products.find(p => p.label === product);
+    if (platform && jenis) {
+      const selectedProduct = products.find(p => p.value === jenis);
       const unitPrice = selectedProduct?.pricePer1000 || 0;
-      const qty = parseInt(quantity.replace('K', '000'));
-      setPrice(unitPrice * (qty / 1000));
+      const qty = parseInt(jumlah.replace('K', ''));
+      setPrice(unitPrice * qty);
     }
-  }, [product, quantity, platform, products]);
+  }, [jenis, jumlah, platform, products]);
 
   const handleOrder = () => {
-    const message = `Hello, I want to order:
+    const message = `Halo! Saya ingin order:
 Platform: ${platform}
-Product: ${product}
-Quantity: ${quantity}
-Username/Link: ${link}
+Jenis: ${jenis}
+Jumlah: ${jumlah}
+Link Target: ${linkTarget}
 Total: Rp${price.toLocaleString('id-ID')}`;
     const url = `https://wa.me/6285156779923?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
@@ -65,7 +77,7 @@ Total: Rp${price.toLocaleString('id-ID')}`;
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg shadow-lg p-6 w-[85%] max-w-lg mx-auto space-y-4">
-      <h2 className="text-xl font-semibold text-white">Dynamic Price Calculator</h2>
+      <h2 className="text-xl font-semibold text-white text-center mb-4">Dynamic Price Calculator</h2>
 
       <div>
         <label className="block font-medium text-sm text-gray-300">Platform</label>
@@ -74,62 +86,67 @@ Total: Rp${price.toLocaleString('id-ID')}`;
           onChange={e => setPlatform(e.target.value as PlatformType)}
           className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
         >
-          <option value="" className="bg-gray-700">Select platform</option>
-          {platformOptions.map(opt => (
-            <option key={opt.value} value={opt.value} className="bg-gray-700">{opt.label}</option>
+          <option value="">Pilih platform</option>
+          {Object.keys(platformData).map(key => (
+            <option key={key} value={key} className="bg-gray-700">
+              {key.charAt(0).toUpperCase() + key.slice(1)}
+            </option>
           ))}
         </select>
       </div>
 
       <div>
-        <label className="block font-medium text-sm text-gray-300">Product</label>
+        <label className="block font-medium text-sm text-gray-300">Jenis</label>
         <select
-          value={product}
-          onChange={e => setProduct(e.target.value)}
+          value={jenis}
+          onChange={e => setJenis(e.target.value)}
           className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
           disabled={!platform}
         >
-          <option value="" className="bg-gray-700">Select product</option>
+          <option value="">Pilih jenis</option>
           {products.map(p => (
-            <option key={p.label} value={p.label} className="bg-gray-700">{p.label}</option>
+            <option key={p.value} value={p.value} className="bg-gray-700">
+              {p.label}
+            </option>
           ))}
         </select>
       </div>
 
       <div>
-        <label className="block font-medium text-sm text-gray-300">Quantity</label>
+        <label className="block font-medium text-sm text-gray-300">Jumlah</label>
         <select
-          value={quantity}
-          onChange={e => setQuantity(e.target.value)}
+          value={jumlah}
+          onChange={e => setJumlah(e.target.value)}
           className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
         >
-          <option value="1000" className="bg-gray-700">1K</option>
-          <option value="2000" className="bg-gray-700">2K</option>
-          <option value="5000" className="bg-gray-700">5K</option>
-          <option value="10000" className="bg-gray-700">10K</option>
+          {quantityOptions.map(q => (
+            <option key={q} value={q} className="bg-gray-700">
+              {q}
+            </option>
+          ))}
         </select>
       </div>
 
       <div>
-        <label className="block font-medium text-sm text-gray-300">Your Link or Username</label>
+        <label className="block font-medium text-sm text-gray-300">Link Target</label>
         <input
-          value={link}
-          onChange={e => setLink(e.target.value)}
+          value={linkTarget}
+          onChange={e => setLinkTarget(e.target.value)}
           className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
-          placeholder="e.g. @yourusername or link"
+          placeholder="Masukkan link target"
         />
       </div>
 
-      <div className="text-base font-semibold mt-2 text-white">
+      <div className="text-base font-semibold mt-2 text-white text-center">
         Total: <span className="text-blue-400">Rp{price.toLocaleString('id-ID')}</span>
       </div>
 
       <button
         onClick={handleOrder}
-        disabled={!platform || !product || !quantity || !link}
+        disabled={!platform || !jenis || !jumlah || !linkTarget}
         className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white py-2 rounded-md font-semibold transition-all duration-200"
       >
-        Pay Now via WhatsApp
+        Bayar Sekarang via WhatsApp
       </button>
     </div>
   );
