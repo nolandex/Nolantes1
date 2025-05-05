@@ -1,55 +1,57 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PaymentModal from "../ui/PaymentModal";
 
 export default function DynamicCalculator() {
   const [platform, setPlatform] = useState("");
-  const [product, setProduct] = useState("");
-  const [quantity, setQuantity] = useState("1K");
+  const [layanan, setLayanan] = useState("");
+  const [jumlah, setJumlah] = useState("1000");
   const [price, setPrice] = useState(0);
-  const [link, setLink] = useState("");
+  const [linkTarget, setLinkTarget] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const platformData: Record<string, Record<string, number>> = {
-    instagram: { followers: 15000, likes: 3000, views: 2000 },
-    tiktok: { followers: 17000, likes: 3000, views: 500, shares: 3000, saves: 3000 },
-    telegram: { members: 15000, reactions: 3000, views: 3000 },
-    youtube: { subscribers: 25000, views: 13000, likes: 5000 },
-    facebook: { followers: 12000, likes: 10000, views: 1000 },
+    instagram: { followers: 15, likes: 3, views: 2 },
+    tiktok: { followers: 17, likes: 3, views: 0.5, shares: 3, saves: 3 },
+    telegram: { members: 15, reactions: 3, views: 3 },
+    youtube: { subscribers: 25, views: 13, likes: 5 },
+    facebook: { followers: 12, likes: 10, views: 1 },
   };
 
   useEffect(() => {
-    if (platform && product && quantity) {
-      const quantityNumber = parseInt(quantity.replace("K", ""));
-      const pricePerK = platformData[platform]?.[product] || 0;
-      setPrice(pricePerK * quantityNumber);
+    if (platform && layanan && jumlah) {
+      const jumlahNumber = parseInt(jumlah);
+      const pricePerUnit = platformData[platform]?.[layanan] || 0;
+      setPrice(pricePerUnit * jumlahNumber);
     } else {
       setPrice(0);
     }
-  }, [platform, product, quantity]);
+  }, [platform, layanan, jumlah]);
 
   const handlePayment = () => {
-    const text = `Halo! Saya ingin order:\nPlatform: ${platform}\nProduk: ${product}\nJumlah: ${quantity}\nLink: ${link}\nTotal: Rp${price.toLocaleString(
-      "id-ID"
-    )}`;
-    const waLink = `https://wa.me/6285156779923?text=${encodeURIComponent(text)}`;
-    window.open(waLink, "_blank");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
     <div className="mt-20 px-4">
-      <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#FFFFFF] text-[#1A1A1A]">
-        <h2 className="text-2xl font-bold text-center mb-6 text-[#1A1A1A]">
+      <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#1A2526] text-[#FFFFFF]">
+        <h2 className="text-2xl font-bold text-center mb-6 text-[#FFFFFF]">
           Dynamic Price Calculator
         </h2>
         <div className="space-y-4">
           <div>
-            <label className="block mb-1 font-semibold text-[#1A1A1A]">Platform</label>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Platform</label>
             <select
-              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A]"
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF] border border-[#B0B0B0]"
               value={platform}
               onChange={(e) => {
                 setPlatform(e.target.value);
-                setProduct("");
+                setLayanan("");
               }}
             >
               <option value="">Select platform</option>
@@ -62,14 +64,14 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#1A1A1A]">Product</label>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Layanan</label>
             <select
-              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A]"
-              value={product}
-              onChange={(e) => setProduct(e.target.value)}
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF] border border-[#B0B0B0]"
+              value={layanan}
+              onChange={(e) => setLayanan(e.target.value)}
               disabled={!platform}
             >
-              <option value="">Select product</option>
+              <option value="">Select layanan</option>
               {platform &&
                 Object.keys(platformData[platform]).map((key) => (
                   <option key={key} value={key}>
@@ -80,13 +82,13 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#1A1A1A]">Quantity</label>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Jumlah</label>
             <select
-              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A]"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF] border border-[#B0B0B0]"
+              value={jumlah}
+              onChange={(e) => setJumlah(e.target.value)}
             >
-              {Array.from({ length: 10 }, (_, i) => `${i + 1}K`).map((q) => (
+              {Array.from({ length: 10 }, (_, i) => (i + 1) * 1000).map((q) => (
                 <option key={q} value={q}>
                   {q}
                 </option>
@@ -95,28 +97,36 @@ export default function DynamicCalculator() {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-[#1A1A1A]">Your Link or Username</label>
+            <label className="block mb-1 font-semibold text-[#FFFFFF]">Link Target</label>
             <input
               type="text"
-              placeholder="e.g. @yourusername or link"
-              className="w-full p-3 rounded bg-[#F6F8FA] text-[#1A1A1A] placeholder:text-[#6B7280]"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
+              className="w-full p-3 rounded bg-[#1A2526] text-[#FFFFFF] border border-[#B0B0B0]"
+              value={linkTarget}
+              onChange={(e) => setLinkTarget(e.target.value)}
             />
           </div>
 
-          <div className="text-center font-bold text-lg text-[#567AF5]">
+          <div className="text-center font-bold text-lg text-[#00A3FF]">
             Total: Rp{price.toLocaleString("id-ID")}
           </div>
 
           <button
             onClick={handlePayment}
-            className="w-full p-3 rounded font-bold text-white bg-[#567AF5] hover:bg-[#00593E] transition"
+            className="w-full p-3 rounded font-bold text-[#FFFFFF] bg-[#007BFF] hover:bg-[#00A3FF] transition"
           >
-            Pay Now via WhatsApp
+            Bayar Sekarang
           </button>
         </div>
       </div>
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        platform={platform}
+        layanan={layanan}
+        jumlah={jumlah}
+        linkTarget={linkTarget}
+        total={price}
+      />
     </div>
   );
 }
