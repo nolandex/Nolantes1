@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PaymentModal from '../ui/PaymentModal'; // Adjust path if needed
 
 type PlatformType = 'instagram' | 'tiktok' | 'youtube' | 'telegram' | 'facebook';
 
@@ -38,15 +39,19 @@ const platformData: Record<PlatformType, ProductOption[]> = {
   ]
 };
 
-const quantityOptions = Array.from({ length: 10 }, (_, i) => `${i + 1}K`);
+const quantityOptions = Array.from({ length: 10 }, (_, i) => ({
+  label: `${i + 1}000`,
+  value: `${i + 1}000`
+}));
 
 const PriceCalculator = () => {
   const [platform, setPlatform] = useState<PlatformType | ''>('');
   const [jenis, setJenis] = useState('');
-  const [jumlah, setJumlah] = useState('1K');
+  const [jumlah, setJumlah] = useState('1000');
   const [linkTarget, setLinkTarget] = useState('');
   const [products, setProducts] = useState<ProductOption[]>([]);
   const [price, setPrice] = useState(0);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     if (platform) {
@@ -59,96 +64,114 @@ const PriceCalculator = () => {
     if (platform && jenis) {
       const selectedProduct = products.find(p => p.value === jenis);
       const unitPrice = selectedProduct?.pricePer1000 || 0;
-      const qty = parseInt(jumlah.replace('K', ''));
-      setPrice(unitPrice * qty);
+      const qty = parseInt(jumlah);
+      setPrice((unitPrice * qty) / 1000);
     }
   }, [jenis, jumlah, platform, products]);
 
-  const handleOrder = () => {
-    const message = `Halo! Saya ingin order:
-Platform: ${platform}
-Jenis: ${jenis}
-Jumlah: ${jumlah}
-Link Target: ${linkTarget}
-Total: Rp${price.toLocaleString('id-ID')}`;
-    const url = `https://wa.me/6285156779923?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+  const handleOpenPaymentModal = () => {
+    if (!platform || !jenis || !jumlah || !linkTarget) return;
+    setShowPaymentModal(true);
+  };
+
+  const handleClosePaymentModal = () => {
+    setShowPaymentModal(false);
+  };
+
+  const paymentData = {
+    platform: platform ? platform.charAt(0).toUpperCase() + platform.slice(1) : '',
+    layanan: jenis,
+    jumlah: jumlah,
+    linkTarget: linkTarget,
+    total: price
   };
 
   return (
-    <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg shadow-lg p-6 w-[85%] max-w-lg mx-auto space-y-4">
-      <h2 className="text-xl font-semibold text-white text-center mb-4">Dynamic Price Calculator</h2>
+    <>
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg shadow-lg p-6 w-[85%] max-w-lg mx-auto space-y-4">
+        <h2 className="text-xl font-semibold text-white text-center mb-4">Social Media Booster</h2>
 
-      <div>
-        <label className="block font-medium text-sm text-gray-300">Platform</label>
-        <select
-          value={platform}
-          onChange={e => setPlatform(e.target.value as PlatformType)}
-          className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
+        <div>
+          <label className="block font-medium text-sm text-gray-300">Platform</label>
+          <select
+            value={platform}
+            onChange={e => setPlatform(e.target.value as PlatformType)}
+            className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
+          >
+            <option value="">Pilih platform</option>
+            {Object.keys(platformData).map(key => (
+              <option key={key} value={key} className="bg-gray-700">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-medium text-sm text-gray-300">Jenis</label>
+          <select
+            value={jenis}
+            onChange={e => setJenis(e.target.value)}
+            className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
+            disabled={!platform}
+          >
+            <option value="">Pilih jenis</option>
+            {products.map(p => (
+              <option key={p.value} value={p.value} className="bg-gray-700">
+                {p.label} (Rp{p.pricePer1000.toLocaleString('id-ID')}/1000)
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-medium text-sm text-gray-300">Jumlah</label>
+          <select
+            value={jumlah}
+            onChange={e => setJumlah(e.target.value)}
+            className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
+          >
+            {quantityOptions.map(q => (
+              <option key={q.value} value={q.value} className="bg-gray-700">
+                {q.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-medium text-sm text-gray-300">Link Target</label>
+          <input
+            value={linkTarget}
+            onChange={e => setLinkTarget(e.target.value)}
+            className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
+            placeholder="Masukkan link target"
+          />
+        </div>
+
+        <div className="text-base font-semibold mt-2 text-white text-center">
+          Total: <span className="text-blue-400">Rp{price.toLocaleString('id-ID')}</span>
+        </div>
+
+        <button
+          onClick={handleOpenPaymentModal}
+          disabled={!platform || !jenis || !jumlah || !linkTarget}
+          className={`w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2 rounded-md font-semibold transition-all duration-200 ${
+            (!platform || !jenis || !jumlah || !linkTarget) 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:from-blue-700 hover:to-blue-600'
+          }`}
         >
-          <option value="">Pilih platform</option>
-          {Object.keys(platformData).map(key => (
-            <option key={key} value={key} className="bg-gray-700">
-              {key.charAt(0).toUpperCase() + key.slice(1)}
-            </option>
-          ))}
-        </select>
+          Bayar
+        </button>
       </div>
 
-      <div>
-        <label className="block font-medium text-sm text-gray-300">Jenis</label>
-        <select
-          value={jenis}
-          onChange={e => setJenis(e.target.value)}
-          className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
-          disabled={!platform}
-        >
-          <option value="">Pilih jenis</option>
-          {products.map(p => (
-            <option key={p.value} value={p.value} className="bg-gray-700">
-              {p.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="block font-medium text-sm text-gray-300">Jumlah</label>
-        <select
-          value={jumlah}
-          onChange={e => setJumlah(e.target.value)}
-          className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
-        >
-          {quantityOptions.map(q => (
-            <option key={q} value={q} className="bg-gray-700">
-              {q}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="block font-medium text-sm text-gray-300">Link Target</label>
-        <input
-          value={linkTarget}
-          onChange={e => setLinkTarget(e.target.value)}
-          className="w-full mt-1 p-2 rounded-md bg-gray-700 text-white border-gray-600"
-          placeholder="Masukkan link target"
-        />
-      </div>
-
-      <div className="text-base font-semibold mt-2 text-white text-center">
-        Total: <span className="text-blue-400">Rp{price.toLocaleString('id-ID')}</span>
-      </div>
-
-      <button
-        onClick={handleOrder}
-        disabled={!platform || !jenis || !jumlah || !linkTarget}
-        className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white py-2 rounded-md font-semibold transition-all duration-200"
-      >
-        Bayar Sekarang via WhatsApp
-      </button>
-    </div>
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={handleClosePaymentModal}
+        paymentData={paymentData}
+      />
+    </>
   );
 };
 
