@@ -1,6 +1,3 @@
-
-  );
-}
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,7 +14,7 @@ export default function DynamicCalculator() {
 
   const platformData: Record<string, Record<string, number>> = {
     instagram: {
-      followers: 25.578, // Rp 25.578/K untuk followers
+      followers: 25.578,
       likes: 3.5,
       views: 2,
     },
@@ -60,7 +57,7 @@ export default function DynamicCalculator() {
     if (platform && layanan && jumlah) {
       const jumlahNumber = parseInt(jumlah);
       const pricePerUnit = platformData[platform]?.[layanan] || 0;
-      setPrice(pricePerUnit * (jumlahNumber / 1000)); // Harga per 1K
+      setPrice(pricePerUnit * (jumlahNumber / 1000));
     } else {
       setPrice(0);
     }
@@ -160,7 +157,7 @@ export default function DynamicCalculator() {
           </div>
 
           <div className="text-center font-bold text-lg text-[#3B82F6]">
-            Harga: Rp{price.toLocaleString("id-ID")}/K
+            Harga: Rp{price.toLocaleString("id-ID")}
           </div>
 
           <button
