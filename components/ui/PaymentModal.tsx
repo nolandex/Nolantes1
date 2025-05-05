@@ -50,22 +50,22 @@ const PaymentModal = ({
   const [vaNumber, setVaNumber] = useState("");
 
   const imagePaths = {
-    qris: "/images/payments/qris.png",
+    qris: "/images/payments/1.png", // Previously qris.png
     banks: {
-      bca: "/images/payments/banks/bca.png",
-      mandiri: "/images/payments/banks/mandiri.png",
-      bni: "/images/payments/banks/bni.png",
+      bca: "/images/payments/banks/2.png", // Previously bca.png
+      mandiri: "/images/payments/banks/3.png", // Previously mandiri.png
+      bni: "/images/payments/banks/4.png", // Previously bni.png
     },
     ewallets: {
-      dana: "/images/payments/ewallets/dana.png",
-      gopay: "/images/payments/ewallets/gopay.png",
-      ovo: "/images/payments/ewallets/ovo.png",
+      dana: "/images/payments/ewallets/5.png", // Previously dana.png
+      gopay: "/images/payments/ewallets/6.png", // Previously gopay.png
+      ovo: "/images/payments/ewallets/7.png", // Previously ovo.png
     },
     retails: {
-      alfamart: "/images/payments/retails/alfamart.png",
-      indomaret: "/images/payments/retails/indomaret.png",
+      alfamart: "/images/payments/retails/8.png", // Previously alfamart.png
+      indomaret: "/images/payments/retails/9.png", // Previously indomaret.png
     },
-    qrCode: "/images/payments/qrcode.png",
+    qrCode: "/images/payments/10.png", // Previously qrcode.png
   };
 
   useEffect(() => {
@@ -351,7 +351,7 @@ const PaymentModal = ({
         <div className="payment-modal w-full max-w-sm overflow-y-auto rounded-xl bg-white shadow-xl">
           <div className="bg-blue-600 p-5 rounded-t-xl">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-white text-center flex-1">CHECKOUT</h2>
+              <h2 className="text-xl font-bold text-white">CHECKOUT</h2>
               <button onClick={onClose} className="text-white hover:text-blue-200">
                 <FontAwesomeIcon icon={faTimes} />
               </button>
@@ -359,14 +359,14 @@ const PaymentModal = ({
           </div>
 
           <div className="p-5">
-            <div className="text-center mb-5 p-3 bg-gray-50 rounded-lg">
-              <h3 className="font-medium text-sm">Total Pembayaran</h3>
-              <p className="text-blue-600 font-bold text-lg">
+            <div className="flex justify-between items-center mb-5 p-3 bg-gray-50 rounded-lg">
+              <h3 className="font-medium text-base">Total Pembayaran</h3>
+              <p className="text-blue-600 font-bold text-xl">
                 {formatRupiah(paymentData.total)}
               </p>
             </div>
 
-            <h3 className="text-xs font-medium mb-3 text-gray-600 text-center">METODE PEMBAYARAN</h3>
+            <h3 className="text-xs font-medium mb-3 text-gray-600">METODE PEMBAYARAN</h3>
 
             <div className="space-y-2 mb-4">
               <div className="payment-method-container">
@@ -421,6 +421,24 @@ const PaymentModal = ({
                         <p>
                           <FontAwesomeIcon icon={faInfoCircle} className="mr-1" />{" "}
                           QR code akan kadaluarsa dalam 24 jam
+                        </p>
+                      </div>
+
+                      <div className="bg-gray-50 p-3 rounded-lg mb-3">
+                        <div>
+                          <label className="block text-gray-500 text-xs mb-1">
+                            Jumlah Transfer
+                          </label>
+                          <span className="font-bold text-blue-600 text-sm">
+                            {formatRupiah(paymentData.total)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
+                        <p>
+                          <FontAwesomeIcon icon={faExclamationCircle} className="mr-1" />{" "}
+                          Transfer tepat sesuai nominal untuk proses otomatis
                         </p>
                       </div>
 
@@ -658,6 +676,16 @@ const PaymentModal = ({
                             </p>
                           </div>
 
+                          <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
+                            <p>
+                              <FontAwesomeIcon
+                                icon={faExclamationCircle}
+                                className="mr-1"
+                              />{" "}
+                              Transfer tepat sesuai nominal untuk proses otomatis
+                            </p>
+                          </div>
+
                           <button
                             onClick={processPayment}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm"
@@ -772,7 +800,7 @@ const PaymentModal = ({
                                 icon={faExclamationCircle}
                                 className="mr-1"
                               />{" "}
-                              Kode pembayaran akan kadaluarsa dalam 24 jam
+                              Transfer tepat sesuai nominal untuk proses otomatis
                             </p>
                           </div>
 
@@ -872,6 +900,16 @@ const PaymentModal = ({
                             {formatRupiah(paymentData.total)}
                           </span>
                         </div>
+                      </div>
+
+                      <div className="bg-yellow-50 p-2 rounded-lg text-xs text-yellow-800 mb-3">
+                        <p>
+                          <FontAwesomeIcon
+                            icon={faExclamationCircle}
+                            className="mr-1"
+                          />{" "}
+                          Transfer tepat sesuai nominal untuk proses otomatis
+                        </p>
                       </div>
 
                       <button
