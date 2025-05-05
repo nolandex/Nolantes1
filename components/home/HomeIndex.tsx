@@ -6,6 +6,7 @@ import Pricing from "@/components/home/Pricing";
 import ScrollingLogos from "@/components/home/ScrollingLogos";
 import SocialProof from "@/components/home/SocialProof";
 import Testimonials from "@/components/home/Testimonials";
+import DynamicCalculator from "@/components/home/DynamicCalculator"; // Tambahkan ini
 import { defaultLocale, getDictionary } from "@/lib/i18n";
 
 export default async function HomeIndex({ lang }: { lang: string }) {
@@ -17,11 +18,7 @@ export default async function HomeIndex({ lang }: { lang: string }) {
       {/* Hero Section */}
       <Hero locale={dict.Hero} langName={langName} CTALocale={dict.CTAButton} />
       <SocialProof locale={dict.SocialProof} />
-      {/* display technology stack, partners, project honors, etc. */}
       <ScrollingLogos />
-
-      {/* Showcase */}
-      {/* <Showcase id="Showcase" locale={dict.Showcase} /> */}
 
       {/* USP (Unique Selling Proposition) */}
       <Feature id="Features" locale={dict.Feature} langName={langName} />
@@ -32,11 +29,14 @@ export default async function HomeIndex({ lang }: { lang: string }) {
       {/* Testimonials */}
       <Testimonials id="Testimonials" locale={dict.Testimonials} />
 
-      {/* FAQ (Frequently Asked Questions) */}
+      {/* FAQ */}
       <FAQ id="FAQ" locale={dict.FAQ} langName={langName} />
 
-      {/* CTA (Call to Action) */}
+      {/* CTA */}
       <CTA locale={dict.CTA} CTALocale={dict.CTAButton} />
+
+      {/* Dynamic Calculator Section */}
+      <DynamicCalculator />
     </>
   );
 }
