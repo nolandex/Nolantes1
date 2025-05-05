@@ -35,88 +35,125 @@ export default function DynamicCalculator() {
     window.open(waLink, "_blank");
   };
 
+  const containerStyle = {
+    backgroundColor: "#1C2526",
+    color: "#ffffff",
+    borderRadius: "1rem",
+    padding: "1.5rem",
+    maxWidth: "500px",
+    margin: "4rem auto",
+    boxShadow: "0 0 20px rgba(0,0,0,0.4)",
+  };
+
+  const inputStyle = {
+    backgroundColor: "#1A1A1A",
+    color: "#ffffff",
+    padding: "0.75rem",
+    borderRadius: "0.5rem",
+    width: "100%",
+    border: "none",
+    marginBottom: "1rem",
+  };
+
+  const labelStyle = {
+    fontWeight: 600,
+    marginBottom: "0.25rem",
+    display: "block",
+  };
+
+  const totalStyle = {
+    textAlign: "center" as const,
+    fontWeight: "bold",
+    fontSize: "1.125rem",
+    color: "#00A3E0",
+    marginBottom: "1rem",
+  };
+
+  const buttonStyle = {
+    backgroundColor: "#1E90FF",
+    color: "#ffffff",
+    fontWeight: "bold",
+    padding: "0.75rem",
+    borderRadius: "0.5rem",
+    width: "100%",
+    border: "none",
+    cursor: "pointer",
+  };
+
   return (
-    <div className="mt-20 px-4">
-      <div className="max-w-xl mx-auto p-6 rounded-2xl shadow-xl bg-[#1C2526] text-white">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white">
-          Dynamic Price Calculator
-        </h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block mb-1 font-semibold">Platform</label>
-            <select
-              className="w-full p-3 rounded bg-[#1A1A1A] text-white"
-              value={platform}
-              onChange={(e) => {
-                setPlatform(e.target.value);
-                setProduct("");
-              }}
-            >
-              <option value="">Select platform</option>
-              {Object.keys(platformData).map((key) => (
-                <option key={key} value={key}>
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
+    <div style={containerStyle}>
+      <h2 style={{ textAlign: "center", fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+        Dynamic Price Calculator
+      </h2>
 
-          <div>
-            <label className="block mb-1 font-semibold">Product</label>
-            <select
-              className="w-full p-3 rounded bg-[#1A1A1A] text-white"
-              value={product}
-              onChange={(e) => setProduct(e.target.value)}
-              disabled={!platform}
-            >
-              <option value="">Select product</option>
-              {platform &&
-                Object.keys(platformData[platform]).map((key) => (
-                  <option key={key} value={key}>
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </option>
-                ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">Quantity</label>
-            <select
-              className="w-full p-3 rounded bg-[#1A1A1A] text-white"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-            >
-              {Array.from({ length: 10 }, (_, i) => `${i + 1}K`).map((q) => (
-                <option key={q} value={q}>
-                  {q}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">Your Link or Username</label>
-            <input
-              type="text"
-              placeholder="e.g. @yourusername or link"
-              className="w-full p-3 rounded bg-[#1A1A1A] text-white placeholder:text-gray-400"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-            />
-          </div>
-
-          <div className="text-center font-bold text-lg text-[#00A3E0]">
-            Total: Rp{price.toLocaleString("id-ID")}
-          </div>
-
-          <button
-            onClick={handlePayment}
-            className="w-full p-3 rounded font-bold text-white bg-[#1E90FF] hover:bg-[#00A3E0] transition"
-          >
-            Pay Now via WhatsApp
-          </button>
-        </div>
+      <div>
+        <label style={labelStyle}>Platform</label>
+        <select
+          style={inputStyle}
+          value={platform}
+          onChange={(e) => {
+            setPlatform(e.target.value);
+            setProduct("");
+          }}
+        >
+          <option value="">Select platform</option>
+          {Object.keys(platformData).map((key) => (
+            <option key={key} value={key}>
+              {key.charAt(0).toUpperCase() + key.slice(1)}
+            </option>
+          ))}
+        </select>
       </div>
+
+      <div>
+        <label style={labelStyle}>Product</label>
+        <select
+          style={inputStyle}
+          value={product}
+          onChange={(e) => setProduct(e.target.value)}
+          disabled={!platform}
+        >
+          <option value="">Select product</option>
+          {platform &&
+            Object.keys(platformData[platform]).map((key) => (
+              <option key={key} value={key}>
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </option>
+            ))}
+        </select>
+      </div>
+
+      <div>
+        <label style={labelStyle}>Quantity</label>
+        <select
+          style={inputStyle}
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+        >
+          {Array.from({ length: 10 }, (_, i) => `${i + 1}K`).map((q) => (
+            <option key={q} value={q}>
+              {q}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label style={labelStyle}>Your Link or Username</label>
+        <input
+          type="text"
+          style={inputStyle}
+          placeholder="e.g. @yourusername or link"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+        />
+      </div>
+
+      <div style={totalStyle}>Total: Rp{price.toLocaleString("id-ID")}</div>
+
+      <button style={buttonStyle} onClick={handlePayment}>
+        Pay Now via WhatsApp
+      </button>
     </div>
   );
 }
